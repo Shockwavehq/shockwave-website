@@ -1,218 +1,850 @@
-/* ==========================================
-   SHOCKWAVE ROI CALCULATOR - CLEAN & FAST
-   ========================================== */
+/**
+ * SHOCKWAVE WEBSITE FUNCTIONALITY
+ * Core JavaScript for GHL Integration
+ * Performance-optimized, mobile-first approach
+ */
 
-const ShockwaveHQ = {
-  data: {},
+// =========================================
+// INITIALIZATION & PERFORMANCE MONITORING
+// =========================================
+
+class ShockwaveWebsite {
+  constructor() {
+    this.initTime = performance.now();
+    this.isGHLEnvironment = this.detectGHL();
+    this.isMobile = window.innerWidth <= 768;
+    
+    this.init();
+  }
+  
+  detectGHL() {
+    return window.location.hostname.includes('gohighlevel') || 
+           window.location.hostname.includes('.app');
+  }
   
   init() {
-    console.log('🚀 ShockwaveHQ Calculator Loading...');
-    
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => this.start());
-    } else {
-      this.start();
-    }
-  },
-  
-  start() {
     this.bindEvents();
-    this.showStep(1);
-    console.log('✅ Calculator Ready');
-  },
+    this.initializeComponents();
+    this.setupAnalytics();
+    this.logPerformance();
+  }
+  
+  // =========================================
+  // EVENT DELEGATION SYSTEM
+  // =========================================
   
   bindEvents() {
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('industry-btn')) {
-        this.selectIndustry(e.target);
-      }
-      if (e.target.classList.contains('revenue-btn')) {
-        this.selectRevenue(e.target);
-      }
-      if (e.target.classList.contains('pain-btn')) {
-        this.selectPainPoint(e.target);
-      }
+    // Single event delegation for performance
+    document.addEventListener('click', this.handleClick.bind(this));
+    document.addEventListener('submit', this.handleSubmit.bind(this));
+    document.addEventListener('input', this.handleInput.bind(this));
+    
+    // Intersection Observer for animations
+    this.setupScrollAnimations();
+    
+    // Resize handler with throttling
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        this.isMobile = window.innerWidth <= 768;
+        this.handleResize();
+      }, 150);
     });
-  },
+  }
   
-  selectIndustry(button) {
-    const industry = button.dataset.industry;
-    this.data.industry = industry;
+  handleClick(e) {
+    const target = e.target.closest('[data-sw-action]');
+    if (!target) return;
     
-    // Instant visual feedback
-    this.clearSelection('.industry-btn');
-    button.classList.add('selected');
+    const action = target.dataset.swAction;
+    const data = this.parseDataAttributes(target);
     
-    console.log('Industry:', industry);
-    
-    // Fast transition
-    setTimeout(() => this.showStep(2), 100);
-  },
-  
-  selectRevenue(button) {
-    const revenue = parseInt(button.dataset.revenue);
-    this.data.revenue = revenue;
-    
-    // Instant visual feedback
-    this.clearSelection('.revenue-btn');
-    button.classList.add('selected');
-    
-    console.log('Revenue:', revenue);
-    
-    // Fast transition
-    setTimeout(() => this.showStep(3), 100);
-  },
-  
-  selectPainPoint(button) {
-    const painPoint = button.dataset.pain;
-    this.data.painPoint = painPoint;
-    
-    // Instant visual feedback
-    this.clearSelection('.pain-btn');
-    button.classList.add('selected');
-    
-    console.log('Pain Point:', painPoint);
-    
-    // Fast calculation
-    setTimeout(() => this.calculateResults(), 100);
-  },
-  
-  clearSelection(selector) {
-    document.querySelectorAll(selector).forEach(btn => {
-      btn.classList.remove('selected');
-    });
-  },
-  
-  showStep(stepNumber) {
-    // Hide all steps
-    document.querySelectorAll('.calc-step').forEach(step => {
-      step.classList.add('hidden');
-    });
-    
-    // Show target step
-    const targetStep = document.querySelector(`[data-step="${stepNumber}"]`);
-    if (targetStep) {
-      targetStep.classList.remove('hidden');
-      targetStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    switch(action) {
+      case 'industry-select':
+        this.selectIndustry(data, target);
+        break;
+      case 'calculate-roi':
+        this.calculateROI(data, target);
+        break;
+      case 'show-pricing':
+        this.showPricing(data, target);
+        break;
+      case 'open-calendar':
+        this.openCalendar(data, target);
+        break;
+      case 'track-cta':
+        this.trackCTA(data, target);
+        break;
     }
-  },
+  }
   
-  calculateResults() {
-    const { industry, revenue, painPoint } = this.data;
+  handleSubmit(e) {
+    const form = e.target.closest('.sw-form');
+    if (!form) return;
     
-    // Industry multipliers
-    const industryMultipliers = {
-      'healthcare': 3.2,
-      'saas': 2.8,
-      'ecommerce': 2.4,
-      'consulting': 3.8,
-      'finance': 3.5,
-      'realestate': 2.9
-    };
+    e.preventDefault();
+    this.processForm(form);
+  }
+  
+  handleInput(e) {
+    const input = e.target;
+    if (input.classList.contains('sw-form__input')) {
+      this.validateInput(input);
+    }
+  }
+  
+  // =========================================
+  // INDUSTRY SELECTION SYSTEM
+  // =========================================
+  
+  selectIndustry(data, element) {
+    const industry = data.industry;
+    const pricing = this.getIndustryPricing(industry);
     
-    // Pain multipliers
-    const painMultipliers = {
-      'response-time': 2.1,
-      'lead-qualification': 2.8,
-      'after-hours': 2.5,
-      'scaling': 3.2
-    };
-    
-    // Calculate ROI
-    const baseROI = revenue * 0.15;
-    const industryBoost = industryMultipliers[industry] || 2.5;
-    const painBoost = painMultipliers[painPoint] || 2.0;
-    
-    const monthlyROI = Math.round((baseROI * industryBoost * painBoost) / 12);
-    const yearlyROI = monthlyROI * 12;
-    const paybackMonths = Math.ceil(3500 / monthlyROI);
-    
-    this.showResults({
-      monthly: monthlyROI,
-      yearly: yearlyROI,
-      payback: Math.max(1, paybackMonths),
-      industry: industry
+    // Track selection
+    this.trackEvent('industry_selected', {
+      industry: industry,
+      element_position: this.getElementPosition(element)
     });
-  },
+    
+    // Update URL without reload
+    const url = new URL(window.location);
+    url.searchParams.set('industry', industry);
+    window.history.pushState({industry}, '', url);
+    
+    // Show industry-specific content
+    this.showIndustryContent(industry, pricing);
+  }
   
-  showResults(results) {
-    this.showStep(4);
+  getIndustryPricing(industry) {
+    const pricingMap = {
+      'dental': {
+        starter: '$1,497',
+        growth: '$2,497',
+        domination: '$3,497',
+        enterprise: '$6,000-$10,000+'
+      },
+      'law': {
+        starter: '$2,497',
+        growth: '$3,997',
+        domination: '$5,997',
+        enterprise: '$8,000-$12,000+'
+      },
+      'medspa': {
+        starter: '$1,797',
+        growth: '$2,997',
+        domination: '$4,497',
+        enterprise: '$7,500-$12,000+'
+      },
+      'hvac': {
+        starter: '$1,297',
+        growth: '$1,997',
+        domination: '$2,997',
+        enterprise: '$6,000-$10,000+'
+      },
+      'plumbing': {
+        starter: '$1,297',
+        growth: '$2,197',
+        domination: '$2,997',
+        enterprise: '$6,000-$10,000+'
+      },
+      'pest': {
+        starter: '$1,197',
+        growth: '$1,997',
+        domination: '$2,997',
+        enterprise: '$6,000-$9,000+'
+      }
+    };
     
-    const container = document.getElementById('calc-results');
-    if (!container) return;
+    return pricingMap[industry] || pricingMap['hvac']; // Default fallback
+  }
+  
+  showIndustryContent(industry, pricing) {
+    // Update pricing display
+    const pricingCards = document.querySelectorAll('.sw-pricing-card');
+    pricingCards.forEach((card, index) => {
+      const tiers = ['starter', 'growth', 'domination', 'enterprise'];
+      const tier = tiers[index];
+      if (pricing[tier]) {
+        const priceElement = card.querySelector('.sw-pricing-card__price');
+        if (priceElement) {
+          priceElement.textContent = pricing[tier];
+        }
+      }
+    });
     
-    container.innerHTML = `
-      <div class="results-container">
-        <h3>🎯 Your AI Agent ROI</h3>
-        <div class="result-value">${this.formatMoney(results.monthly)}/month</div>
-        <p>Projected monthly value with AI automation</p>
-        
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0;">
-          <div style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
-            <div style="font-size: 1.5rem; font-weight: 700;">${this.formatMoney(results.yearly)}</div>
-            <div style="font-size: 0.9rem; opacity: 0.8;">Annual ROI</div>
-          </div>
-          <div style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
-            <div style="font-size: 1.5rem; font-weight: 700;">${results.payback} months</div>
-            <div style="font-size: 0.9rem; opacity: 0.8;">Payback Period</div>
-          </div>
-          <div style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
-            <div style="font-size: 1.5rem; font-weight: 700;">${this.getIndustryName(results.industry)}</div>
-            <div style="font-size: 0.9rem; opacity: 0.8;">Industry</div>
-          </div>
+    // Update industry-specific messaging
+    this.updateIndustryMessaging(industry);
+    
+    // Smooth scroll to pricing section
+    const pricingSection = document.querySelector('.sw-pricing');
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }
+  
+  updateIndustryMessaging(industry) {
+    const messaging = {
+      'dental': {
+        headline: 'Stop Losing Dental Patients to Missed Calls',
+        subheading: 'Capture every appointment, reduce no-shows by 50%, fill cancellations automatically.'
+      },
+      'law': {
+        headline: 'Win More Cases with 5-Minute Response Times',
+        subheading: 'Capture leads before competitors, increase consultation show rates, automate intake.'
+      },
+      'medspa': {
+        headline: 'Fill Every Treatment Slot Automatically',
+        subheading: 'Smart waitlists, deposit enforcement, and instant booking for maximum revenue.'
+      },
+      'hvac': {
+        headline: 'Never Miss Another Emergency Call',
+        subheading: 'After-hours coverage, smart routing, and seasonal surge management.'
+      },
+      'plumbing': {
+        headline: 'Capture Emergency Calls 24/7',
+        subheading: 'Instant triage, route optimization, and premium pricing automation.'
+      },
+      'pest': {
+        headline: 'Maximize Seasonal Revenue Capture',
+        subheading: 'Route optimization, weather triggers, and recurring service automation.'
+      }
+    };
+    
+    const content = messaging[industry];
+    if (content) {
+      const headline = document.querySelector('.sw-hero__headline');
+      const subheadline = document.querySelector('.sw-hero__subheadline');
+      
+      if (headline) headline.textContent = content.headline;
+      if (subheadline) subheadline.textContent = content.subheading;
+    }
+  }
+  
+  // =========================================
+  // ROI CALCULATOR SYSTEM
+  // =========================================
+  
+  calculateROI(data, element) {
+    const form = element.closest('.sw-calculator');
+    const inputs = form.querySelectorAll('.sw-form__input');
+    const values = {};
+    
+    // Collect input values
+    inputs.forEach(input => {
+      values[input.name] = parseFloat(input.value) || 0;
+    });
+    
+    // Industry-specific ROI calculations
+    const industry = data.industry || this.getCurrentIndustry();
+    const roi = this.calculateIndustryROI(industry, values);
+    
+    // Display results
+    this.displayROIResults(roi, form);
+    
+    // Track calculation
+    this.trackEvent('roi_calculated', {
+      industry: industry,
+      monthly_revenue: roi.monthlyRevenue,
+      annual_revenue: roi.annualRevenue,
+      roi_percentage: roi.roiPercentage
+    });
+  }
+  
+  calculateIndustryROI(industry, values) {
+    const { calls, missedRate, avgValue, currentNoShows } = values;
+    
+    // Base calculations
+    const missedCalls = calls * (missedRate / 100);
+    const recoveredCalls = missedCalls * 0.30; // 30% recovery rate
+    const recoveredAppointments = recoveredCalls * 0.60; // 60% conversion
+    const noShowReduction = currentNoShows * 0.40; // 40% reduction
+    
+    // Revenue calculations
+    const recoveredRevenue = recoveredAppointments * avgValue;
+    const savedNoShowRevenue = noShowReduction * avgValue;
+    const totalMonthlyBenefit = recoveredRevenue + savedNoShowRevenue;
+    
+    // Industry-specific pricing
+    const pricing = this.getIndustryPricing(industry);
+    const monthlyCost = this.extractNumericValue(pricing.growth);
+    
+    return {
+      monthlyRevenue: totalMonthlyBenefit,
+      annualRevenue: totalMonthlyBenefit * 12,
+      monthlyCost: monthlyCost,
+      netBenefit: totalMonthlyBenefit - monthlyCost,
+      roiPercentage: ((totalMonthlyBenefit / monthlyCost) * 100).toFixed(0)
+    };
+  }
+  
+  displayROIResults(roi, container) {
+    const resultHTML = `
+      <div class="sw-calculator__result">
+        <div class="sw-calculator__result-amount">$${roi.monthlyRevenue.toLocaleString()}</div>
+        <div class="sw-calculator__result-label">Additional Monthly Revenue</div>
+        <div class="sw-mt-md">
+          <div class="sw-text-sm">Annual Impact: $${roi.annualRevenue.toLocaleString()}</div>
+          <div class="sw-text-sm">ROI: ${roi.roiPercentage}% Monthly Return</div>
         </div>
-        
-        <button class="swx-btn" 
-                style="background: white; color: var(--primary); font-size: 1.1rem; padding: 1rem 2rem; font-weight: 700; margin-top: 1rem;" 
-                onclick="ShockwaveHQ.bookCall()">
-          📅 Get This ROI for Your Business
+        <button class="sw-btn sw-btn--secondary sw-mt-md" data-sw-action="open-calendar">
+          Get Your Custom ROI Plan
         </button>
       </div>
     `;
     
-    console.log('Results:', results);
-  },
-  
-  formatMoney(amount) {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount);
-  },
-  
-  getIndustryName(industry) {
-    const names = {
-      'healthcare': 'Healthcare',
-      'saas': 'SaaS/Tech',
-      'ecommerce': 'E-commerce',
-      'consulting': 'Consulting',
-      'finance': 'Finance',
-      'realestate': 'Real Estate'
-    };
-    return names[industry] || industry;
-  },
-  
-  bookCall() {
-    alert('🚀 Strategy Call\n\nThis would open your booking calendar!\n\nYour ROI: ' + this.formatMoney(this.data.monthlyROI || 0) + '/month');
-    console.log('📞 Book call clicked');
+    let resultContainer = container.querySelector('.sw-calculator__results');
+    if (!resultContainer) {
+      resultContainer = document.createElement('div');
+      resultContainer.className = 'sw-calculator__results';
+      container.appendChild(resultContainer);
+    }
+    
+    resultContainer.innerHTML = resultHTML;
+    
+    // Animate result appearance
+    setTimeout(() => {
+      resultContainer.classList.add('sw-fade-in-up');
+    }, 100);
   }
-};
-
-// Smooth scrolling for anchor links
-document.addEventListener('click', (e) => {
-  if (e.target.matches('a[href^="#"]')) {
-    e.preventDefault();
-    const target = document.querySelector(e.target.getAttribute('href'));
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  
+  // =========================================
+  // FORM PROCESSING SYSTEM
+  // =========================================
+  
+  processForm(form) {
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Add form loading state
+    form.classList.add('sw-loading');
+    
+    // Validate form
+    const validation = this.validateForm(data);
+    if (!validation.valid) {
+      this.showFormErrors(form, validation.errors);
+      form.classList.remove('sw-loading');
+      return;
+    }
+    
+    // Submit to GHL
+    this.submitToGHL(data, form);
+  }
+  
+  validateForm(data) {
+    const errors = {};
+    let valid = true;
+    
+    // Email validation
+    if (data.email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(data.email)) {
+        errors.email = 'Please enter a valid email address';
+        valid = false;
+      }
+    }
+    
+    // Phone validation
+    if (data.phone) {
+      const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+      if (!phoneRegex.test(data.phone.replace(/\D/g, ''))) {
+        errors.phone = 'Please enter a valid phone number';
+        valid = false;
+      }
+    }
+    
+    // Required field validation
+    const required = ['firstName', 'email', 'phone'];
+    required.forEach(field => {
+      if (!data[field] || data[field].trim() === '') {
+        errors[field] = 'This field is required';
+        valid = false;
+      }
+    });
+    
+    return { valid, errors };
+  }
+  
+  showFormErrors(form, errors) {
+    // Clear existing errors
+    form.querySelectorAll('.sw-form__error').forEach(error => error.remove());
+    form.querySelectorAll('.sw-form__input--error').forEach(input => {
+      input.classList.remove('sw-form__input--error');
+    });
+    
+    // Show new errors
+    Object.entries(errors).forEach(([field, message]) => {
+      const input = form.querySelector(`[name="${field}"]`);
+      if (input) {
+        input.classList.add('sw-form__input--error');
+        
+        const errorElement = document.createElement('div');
+        errorElement.className = 'sw-form__error sw-text-sm';
+        errorElement.style.color = 'var(--sw-highlight)';
+        errorElement.textContent = message;
+        
+        input.parentNode.appendChild(errorElement);
+      }
+    });
+  }
+  
+  submitToGHL(data, form) {
+    // Add industry context
+    data.industry = this.getCurrentIndustry();
+    data.source = 'shockwave_website';
+    data.timestamp = new Date().toISOString();
+    
+    // Track form submission
+    this.trackEvent('form_submitted', {
+      form_type: form.dataset.formType || 'contact',
+      industry: data.industry
+    });
+    
+    // GHL webhook submission
+    if (this.isGHLEnvironment) {
+      // Use GHL's native form submission
+      form.submit();
+    } else {
+      // Development mode - simulate submission
+      setTimeout(() => {
+        this.showFormSuccess(form);
+      }, 1000);
     }
   }
-});
+  
+  showFormSuccess(form) {
+    form.classList.remove('sw-loading');
+    
+    const successHTML = `
+      <div class="sw-form__success">
+        <div class="sw-text-center sw-p-lg">
+          <div class="sw-text-primary sw-font-bold sw-mb-sm">Thank you!</div>
+          <div>We'll contact you within 5 minutes to discuss your automation needs.</div>
+        </div>
+      </div>
+    `;
+    
+    form.innerHTML = successHTML;
+    
+    // Redirect to calendar after 3 seconds
+    setTimeout(() => {
+      this.openCalendar({ source: 'form_success' });
+    }, 3000);
+  }
+  
+  // =========================================
+  // CALENDAR INTEGRATION
+  // =========================================
+  
+  openCalendar(data = {}, element = null) {
+    const calendarUrl = this.getCalendarUrl(data);
+    
+    // Track calendar open
+    this.trackEvent('calendar_opened', {
+      source: data.source || 'cta_click',
+      industry: this.getCurrentIndustry()
+    });
+    
+    // Open calendar modal or new tab
+    if (this.isMobile) {
+      window.open(calendarUrl, '_blank');
+    } else {
+      this.openCalendarModal(calendarUrl);
+    }
+  }
+  
+  getCalendarUrl(data) {
+    // Base calendar URL - update with your actual Calendly/GHL calendar
+    let baseUrl = 'https://calendar.app.gohighlevel.com/shockwave-demo';
+    
+    // Add UTM parameters for tracking
+    const params = new URLSearchParams({
+      utm_source: 'website',
+      utm_medium: 'cta',
+      utm_campaign: data.source || 'general',
+      industry: this.getCurrentIndustry()
+    });
+    
+    return `${baseUrl}?${params.toString()}`;
+  }
+  
+  openCalendarModal(url) {
+    const modal = document.createElement('div');
+    modal.className = 'sw-modal';
+    modal.innerHTML = `
+      <div class="sw-modal__backdrop" data-sw-action="close-modal"></div>
+      <div class="sw-modal__content">
+        <button class="sw-modal__close" data-sw-action="close-modal">&times;</button>
+        <iframe src="${url}" width="100%" height="600" frameborder="0"></iframe>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    
+    // Close modal functionality
+    modal.addEventListener('click', (e) => {
+      if (e.target.dataset.swAction === 'close-modal') {
+        this.closeCalendarModal(modal);
+      }
+    });
+  }
+  
+  closeCalendarModal(modal) {
+    document.body.removeChild(modal);
+    document.body.style.overflow = '';
+  }
+  
+  // =========================================
+  // ANALYTICS & TRACKING
+  // =========================================
+  
+  setupAnalytics() {
+    // Track page view
+    this.trackEvent('page_view', {
+      page: window.location.pathname,
+      industry: this.getCurrentIndustry(),
+      referrer: document.referrer
+    });
+    
+    // Track scroll depth
+    this.setupScrollTracking();
+  }
+  
+  setupScrollTracking() {
+    let scrollDepth = 0;
+    const trackingThresholds = [25, 50, 75, 100];
+    
+    window.addEventListener('scroll', () => {
+      const scrollPercent = Math.round(
+        (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100
+      );
+      
+      trackingThresholds.forEach(threshold => {
+        if (scrollPercent >= threshold && scrollDepth < threshold) {
+          scrollDepth = threshold;
+          this.trackEvent('scroll_depth', {
+            depth: threshold,
+            industry: this.getCurrentIndustry()
+          });
+        }
+      });
+    });
+  }
+  
+  trackEvent(eventName, data = {}) {
+    // Enhanced event data
+    const eventData = {
+      ...data,
+      timestamp: new Date().toISOString(),
+      page: window.location.pathname,
+      user_agent: navigator.userAgent,
+      viewport_width: window.innerWidth,
+      viewport_height: window.innerHeight
+    };
+    
+    // Google Analytics 4
+    if (typeof gtag !== 'undefined') {
+      gtag('event', eventName, eventData);
+    }
+    
+    // Facebook Pixel
+    if (typeof fbq !== 'undefined') {
+      fbq('track', eventName, eventData);
+    }
+    
+    // Console log for development
+    if (!this.isGHLEnvironment) {
+      console.log('Event:', eventName, eventData);
+    }
+  }
+  
+  trackCTA(data, element) {
+    const ctaData = {
+      cta_text: element.textContent.trim(),
+      cta_position: this.getElementPosition(element),
+      cta_type: data.type || 'button',
+      ...data
+    };
+    
+    this.trackEvent('cta_clicked', ctaData);
+  }
+  
+  // =========================================
+  // SCROLL ANIMATIONS
+  // =========================================
+  
+  setupScrollAnimations() {
+    const animatedElements = document.querySelectorAll('.sw-fade-in-up, .sw-card, .sw-pricing-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = 'sw-fadeInUp 0.6s ease forwards';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '50px'
+    });
+    
+    animatedElements.forEach(el => {
+      el.style.opacity = '0';
+      observer.observe(el);
+    });
+  }
+  
+  // =========================================
+  // UTILITY FUNCTIONS
+  // =========================================
+  
+  getCurrentIndustry() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('industry') || 'general';
+  }
+  
+  parseDataAttributes(element) {
+    const data = {};
+    Object.keys(element.dataset).forEach(key => {
+      if (key.startsWith('sw')) {
+        const cleanKey = key.replace('sw', '').toLowerCase();
+        data[cleanKey] = element.dataset[key];
+      }
+    });
+    return data;
+  }
+  
+  getElementPosition(element) {
+    const rect = element.getBoundingClientRect();
+    return {
+      x: Math.round(rect.left),
+      y: Math.round(rect.top),
+      section: this.getElementSection(element)
+    };
+  }
+  
+  getElementSection(element) {
+    const sections = ['hero', 'pricing', 'industry', 'calculator', 'footer'];
+    for (const section of sections) {
+      if (element.closest(`.sw-${section}`)) {
+        return section;
+      }
+    }
+    return 'unknown';
+  }
+  
+  extractNumericValue(priceString) {
+    const matches = priceString.match(/[\d,]+/);
+    if (matches) {
+      return parseInt(matches[0].replace(/,/g, ''));
+    }
+    return 0;
+  }
+  
+  validateInput(input) {
+    const value = input.value.trim();
+    let isValid = true;
+    
+    // Remove existing validation classes
+    input.classList.remove('sw-form__input--error');
+    
+    // Email validation
+    if (input.type === 'email' && value) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      isValid = emailRegex.test(value);
+    }
+    
+    // Phone validation
+    if (input.type === 'tel' && value) {
+      const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+      isValid = phoneRegex.test(value.replace(/\D/g, ''));
+    }
+    
+    // Required field validation
+    if (input.hasAttribute('required') && !value) {
+      isValid = false;
+    }
+    
+    // Apply validation state
+    if (!isValid) {
+      input.classList.add('sw-form__input--error');
+    }
+    
+    return isValid;
+  }
+  
+  handleResize() {
+    // Recalculate mobile state
+    this.isMobile = window.innerWidth <= 768;
+    
+    // Adjust modal sizes if any are open
+    const modals = document.querySelectorAll('.sw-modal');
+    modals.forEach(modal => {
+      const content = modal.querySelector('.sw-modal__content');
+      if (content && this.isMobile) {
+        content.style.width = '95%';
+        content.style.height = '90%';
+      }
+    });
+  }
+  
+  logPerformance() {
+    const loadTime = performance.now() - this.initTime;
+    
+    // Track performance metrics
+    this.trackEvent('performance', {
+      load_time: Math.round(loadTime),
+      dom_interactive: Math.round(performance.timing.domInteractive - performance.timing.navigationStart),
+      page_load: Math.round(performance.timing.loadEventEnd - performance.timing.navigationStart)
+    });
+    
+    // Console log for development
+    if (!this.isGHLEnvironment) {
+      console.log(`Shockwave Website initialized in ${Math.round(loadTime)}ms`);
+    }
+  }
+  
+  // =========================================
+  // COMPONENT INITIALIZERS
+  // =========================================
+  
+  initializeComponents() {
+    this.initializePricingCards();
+    this.initializeROICalculators();
+    this.initializeIndustryCards();
+  }
+  
+  initializePricingCards() {
+    const pricingCards = document.querySelectorAll('.sw-pricing-card');
+    pricingCards.forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-4px)';
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        if (!card.classList.contains('sw-pricing-card--featured')) {
+          card.style.transform = 'translateY(0)';
+        }
+      });
+    });
+  }
+  
+  initializeROICalculators() {
+    const calculators = document.querySelectorAll('.sw-calculator');
+    calculators.forEach(calculator => {
+      const inputs = calculator.querySelectorAll('.sw-form__input');
+      inputs.forEach(input => {
+        input.addEventListener('input', () => {
+          // Auto-calculate if all fields are filled
+          const allFilled = Array.from(inputs).every(inp => inp.value.trim() !== '');
+          if (allFilled) {
+            const button = calculator.querySelector('[data-sw-action="calculate-roi"]');
+            if (button) {
+              setTimeout(() => {
+                button.click();
+              }, 500);
+            }
+          }
+        });
+      });
+    });
+  }
+  
+  initializeIndustryCards() {
+    // Auto-select industry from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const industry = urlParams.get('industry');
+    
+    if (industry) {
+      const industryCard = document.querySelector(`[data-sw-industry="${industry}"]`);
+      if (industryCard) {
+        industryCard.click();
+      }
+    }
+  }
+}
 
-// Start the calculator
-ShockwaveHQ.init();
+// =========================================
+// INITIALIZE ON DOM READY
+// =========================================
 
-// Global access
-window.ShockwaveHQ = ShockwaveHQ;
+// Wait for DOM to be ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    window.shockwave = new ShockwaveWebsite();
+  });
+} else {
+  window.shockwave = new ShockwaveWebsite();
+}
+
+// Export for module systems
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = ShockwaveWebsite;
+}
+
+// =========================================
+// ADDITIONAL UTILITY FUNCTIONS
+// =========================================
+
+// URL Parameter Management
+function updateURLParameter(key, value) {
+  const url = new URL(window.location);
+  url.searchParams.set(key, value);
+  window.history.pushState({[key]: value}, '', url);
+}
+
+// Smooth Scrolling Utility
+function smoothScrollTo(element, offset = 0) {
+  const targetPosition = element.offsetTop - offset;
+  window.scrollTo({
+    top: targetPosition,
+    behavior: 'smooth'
+  });
+}
+
+// Format Currency Utility
+function formatCurrency(amount, includeSymbol = true) {
+  const formatted = new Intl.NumberFormat('en-US').format(amount);
+  return includeSymbol ? `$${formatted}` : formatted;
+}
+
+// Debounce Utility
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// Load External Script Utility
+function loadScript(src, callback) {
+  const script = document.createElement('script');
+  script.src = src;
+  script.onload = callback;
+  document.head.appendChild(script);
+}
+
+// Check if Element is in Viewport
+function isInViewport(element) {
+  const rect = element.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
+// =========================================
+// END SHOCKWAVE FUNCTIONALITY
+// =========================================
