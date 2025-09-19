@@ -844,7 +844,146 @@ function isInViewport(element) {
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
+// Modal Calendar System with Calendly Integration
+function openCalendarModal(industry = null) {
+    const modal = document.createElement('div');
+    modal.className = 'calendar-modal-overlay';
+    modal.innerHTML = `
+        <div class="calendar-modal">
+            <div class="modal-header">
+                <h3>Book Your ${industry ? industry : 'AI Automation'} Strategy Call</h3>
+                <button class="close-modal" onclick="closeCalendarModal()">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div class="booking-benefits">
+                    <h4>What You'll Get (15 Minutes):</h4>
+                    <ul>
+                        <li>✅ Custom ROI calculation for your ${industry ? industry.toLowerCase() : 'business'}</li>
+                        <li>✅ Specific automation recommendations</li>
+                        <li>✅ Implementation timeline & investment</li>
+                        <li>✅ 48-hour pilot proposal (if qualified)</li>
+                    </ul>
+                </div>
+                <div class="calendly-container">
+                    <div class="calendly-inline-widget" 
+                         data-url="https://calendly.com/your-calendly-link/strategy-call"
+                         style="min-width:320px;height:630px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    
+    // Load Calendly widget
+    loadCalendlyWidget();
+    
+    // Close on overlay click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeCalendarModal();
+    });
+}
 
+function closeCalendarModal() {
+    const modal = document.querySelector('.calendar-modal-overlay');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function loadCalendlyWidget() {
+    // Load Calendly CSS if not already loaded
+    if (!document.querySelector('link[href*="calendly.com"]')) {
+        const link = document.createElement('link');
+        link.href = 'https://assets.calendly.com/assets/external/widget.css';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+    }
+    
+    // Load Calendly JS if not already loaded
+    if (!window.Calendly) {
+        const script = document.createElement('script');
+        script.src = 'https://assets.calendly.com/assets/external/widget.js';
+        script.onload = () => {
+            initializeCalendlyWidget();
+        };
+        document.head.appendChild(script);
+    } else {
+        initializeCalendlyWidget();
+    }
+}
+
+function initializeCalendlyWidget() {
+    const container = document.querySelector('.calendly-inline-widget');
+    if (container && window.Calendly) {
+        window.Calendly.initInlineWidget({
+            url: container.dataset.url,
+            parentElement: container,
+            prefill: {},
+            utm: {
+                utmCampaign: 'Website Modal',
+                utmSource: 'ShockwaveHQ',
+                utmMedium: 'Modal Popup'
+            }
+        });
+    }
+}
+
+// Enhanced CTA buttons with modal integration
+function updateCTAButtons() {
+    // Update all "Book Call" buttons to use modal
+    document.querySelectorAll('.cta-button, .book-call-btn').forEach(button => {
+        const industry = button.closest('.industry-card')?.dataset.industry;
+        button.onclick = () => openCalendarModal(industry);
+    });
+}
+
+// Auto-trigger modal for high-intent actions
+function setupAutoTriggers() {
+    // Trigger after ROI calculation
+    window.addEventListener('roi-calculated', (e) => {
+        const industry = e.detail.industry;
+        setTimeout(() => {
+            if (!document.querySelector('.calendar-modal-overlay')) {
+                showBookingPrompt(industry);
+            }
+        }, 3000); // 3 second delay after ROI calc
+    });
+}
+
+function showBookingPrompt(industry) {
+    const prompt = document.createElement('div');
+    prompt.className = 'booking-prompt';
+    prompt.innerHTML = `
+        <div class="prompt-content">
+            <p><strong>Ready to see these results in your ${industry.toLowerCase()} practice?</strong></p>
+            <button onclick="openCalendarModal('${industry}'); this.parentElement.parentElement.remove();" class="prompt-cta">
+                Book 15-Min Strategy Call
+            </button>
+            <button onclick="this.parentElement.parentElement.remove();" class="prompt-close">Maybe Later</button>
+        </div>
+    `;
+    document.body.appendChild(prompt);
+    
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+        if (prompt.parentElement) prompt.remove();
+    }, 10000);
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    updateCTAButtons();
+    setupAutoTriggers();
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeCalendarModal();
+});
 // =========================================
 // END SHOCKWAVE FUNCTIONALITY
 // =========================================
