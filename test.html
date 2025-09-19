@@ -3,79 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShockwaveHQ - AI Automations That Generate $50K+ Monthly ROI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="description" content="ShockwaveHQ - Impact on Contact™. Eliminate revenue leaks by automating first response, follow-through, and booking.">
+    <meta name="keywords" content="automation, revenue, booking, first response, follow-through, ShockwaveHQ">
+    <title>ShockwaveHQ - Impact on Contact™</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Critical CSS (inline for performance) -->
+    <style>
+        /* Critical above-the-fold styles */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: clamp(14px, 1.2vw, 18px); }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #000000;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+        .shockwave-hero { 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative;
+        }
+    </style>
+    
+    <!-- External CSS -->
     <link rel="stylesheet" href="shockwave-styles.css">
+    
+    <!-- GSAP & Three.js (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 </head>
 <body>
-    <!-- HERO SECTION -->
-    <section class="hero-section">
+    <!-- Hero Section -->
+    <section class="shockwave-hero gpu-layer">
+        <!-- Background Effects -->
+        <div class="hero-background"></div>
+        <canvas class="neural-canvas"></canvas>
+        
+        <!-- Hero Content -->
         <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="fade-in">
-                    AI Automations That Generate
-                    <span class="roi-highlight">
-                        $<span class="roi-counter">50,000</span>+ Monthly ROI
-                    </span>
+            <div class="hero-glass gpu-layer">
+                <!-- Trust Indicator -->
+                <div class="trust-pulse">
+                    <div class="trust-dot"></div>
+                    Live Impact Tracking
+                </div>
+                
+                <!-- Tagline -->
+                <div class="hero-tagline">Impact on Contact™</div>
+                
+                <!-- Main Headline -->
+                <h1 class="hero-headline">
+                    Eliminate Revenue Leaks
                 </h1>
                 
-                <p class="fade-in fade-in-delay-1">
-                    Pick Your Industry. See Your Impact. <span class="trademark">Impact on Contact™</span>
+                <!-- Subtitle -->
+                <h2 class="hero-subtitle">
+                    Automate First Response, Follow-Through & Booking
+                </h2>
+                
+                <!-- Mission Statement -->
+                <p class="hero-mission">
+                    Measurably, safely, and fast. ShockwaveHQ transforms your lead pipeline with intelligent automation that never sleeps, never misses, and never loses a potential customer.
                 </p>
                 
-                <!-- Industry Cards -->
-                <div class="industry-grid fade-in fade-in-delay-2">
-                    <div class="industry-card" data-industry="dental" data-roi="8400">
-                        <span class="industry-icon">🦷</span>
-                        <span class="industry-name">Dental</span>
-                        <span class="industry-roi">$1,497-$8,497</span>
-                    </div>
-                    <div class="industry-card" data-industry="legal" data-roi="12500">
-                        <span class="industry-icon">⚖️</span>
-                        <span class="industry-name">Legal</span>
-                        <span class="industry-roi">$2,497-$12,497</span>
-                    </div>
-                    <div class="industry-card" data-industry="realestate" data-roi="15000">
-                        <span class="industry-icon">🏠</span>
-                        <span class="industry-name">Real Estate</span>
-                        <span class="industry-roi">$3,497-$15,497</span>
-                    </div>
-                    <div class="industry-card" data-industry="restaurants" data-roi="6800">
-                        <span class="industry-icon">🍽️</span>
-                        <span class="industry-name">Restaurants</span>
-                        <span class="industry-roi">$997-$6,497</span>
-                    </div>
-                    <div class="industry-card" data-industry="fitness" data-roi="9200">
-                        <span class="industry-icon">💪</span>
-                        <span class="industry-name">Fitness</span>
-                        <span class="industry-roi">$1,297-$9,497</span>
-                    </div>
-                    <div class="industry-card" data-industry="medical" data-roi="18000">
-                        <span class="industry-icon">🏥</span>
-                        <span class="industry-name">Medical</span>
-                        <span class="industry-roi">$4,997-$18,997</span>
-                    </div>
+                <!-- CTA Buttons -->
+                <div class="hero-cta-group">
+                    <a href="#demo" class="cta-primary gpu-layer">
+                        <span>Start Free Trial</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                        </svg>
+                    </a>
+                    <a href="#pricing" class="cta-secondary gpu-layer">
+                        <span>See ROI Calculator</span>
+                    </a>
                 </div>
                 
-                <!-- Stats Ticker -->
-                <div class="stats-ticker fade-in fade-in-delay-2">
-                    <span>🔥 Businesses served today:</span>
-                    <span class="stats-number">247</span>
+                <!-- ROI Metrics Grid -->
+                <div class="hero-metrics">
+                    <!-- Dental Metrics -->
+                    <div class="metric-card gpu-layer">
+                        <div class="metric-title">Dental Practices</div>
+                        <div class="metric-value">$2.4K</div>
+                        <div class="metric-roi">Monthly ROI: $2.4K–$6.5K</div>
+                        <div class="metric-price">From $2,497/mo</div>
+                    </div>
+                    
+                    <!-- Law Firm Metrics -->
+                    <div class="metric-card gpu-layer">
+                        <div class="metric-title">Law Firms</div>
+                        <div class="metric-value">$12K</div>
+                        <div class="metric-roi">Monthly ROI: $3K–$12K+</div>
+                        <div class="metric-price">From $3,997/mo</div>
+                    </div>
+                    
+                    <!-- HVAC Metrics -->
+                    <div class="metric-card gpu-layer">
+                        <div class="metric-title">HVAC Services</div>
+                        <div class="metric-value">$8.5K</div>
+                        <div class="metric-roi">Monthly ROI: $2.8K–$8.5K</div>
+                        <div class="metric-price">From $1,997/mo</div>
+                    </div>
+                    
+                    <!-- MedSpa Metrics -->
+                    <div class="metric-card gpu-layer">
+                        <div class="metric-title">MedSpas</div>
+                        <div class="metric-value">$9.5K</div>
+                        <div class="metric-roi">Monthly ROI: $2.4K–$9.5K+</div>
+                        <div class="metric-price">From $2,997/mo</div>
+                    </div>
                 </div>
-                
-                <!-- Primary CTA -->
-                <button class="cta-primary pulse-animation fade-in fade-in-delay-3" onclick="openROICalculator()">
-                    📊 Calculate My Industry ROI
-                </button>
             </div>
-            
-            <div class="hero-visual fade-in fade-in-delay-1">
-                <img src="https://via.placeholder.com/500x400/1A1A1A/D12E1F?text=AI+Dashboard" alt="AI Automation Dashboard">
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <span>Scroll to explore</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+    
+    <!-- Additional sections for scroll testing -->
+    <section style="height: 100vh; background: linear-gradient(135deg, #1a0a08, #2d0e0a); display: flex; align-items: center; justify-content: center;">
+        <div style="text-align: center; max-width: 800px; padding: 2rem;">
+            <h2 style="font-size: 3rem; margin-bottom: 2rem; color: #D12E1F;">How It Works</h2>
+            <p style="font-size: 1.2rem; line-height: 1.7; color: rgba(255,255,255,0.8);">
+                Our AI-powered system monitors your leads 24/7, automatically responding within seconds, 
+                qualifying prospects, and booking appointments directly into your calendar. No human intervention required.
+            </p>
+        </div>
+    </section>
+    
+    <section style="height: 100vh; background: linear-gradient(135deg, #2d0e0a, #1a0a08); display: flex; align-items: center; justify-content: center;">
+        <div style="text-align: center; max-width: 800px; padding: 2rem;">
+            <h2 style="font-size: 3rem; margin-bottom: 2rem; color: #F03E3E;">Proven Results</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 3rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; font-weight: 800; color: #D12E1F; margin-bottom: 0.5rem;">300%</div>
+                    <div style="color: rgba(255,255,255,0.8);">Average ROI Increase</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; font-weight: 800; color: #D12E1F; margin-bottom: 0.5rem;">45s</div>
+                    <div style="color: rgba(255,255,255,0.8);">Average Response Time</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; font-weight: 800; color: #D12E1F; margin-bottom: 0.5rem;">98%</div>
+                    <div style="color: rgba(255,255,255,0.8);">Lead Capture Rate</div>
+                </div>
             </div>
         </div>
     </section>
-
+    
+    <!-- Performance Monitoring (for development) -->
+    <script>
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            if (window.performance) {
+                const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+                console.log(`🚀 ShockwaveHQ loaded in ${loadTime}ms`);
+            }
+        });
+        
+        // Animation performance monitoring
+        let frameCount = 0;
+        let lastTime = performance.now();
+        
+        function measureFPS() {
+            frameCount++;
+            const currentTime = performance.now();
+            
+            if (currentTime >= lastTime + 1000) {
+                const fps = Math.round(frameCount * 1000 / (currentTime - lastTime));
+                console.log(`📊 FPS: ${fps}`);
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            requestAnimationFrame(measureFPS);
+        }
+        
+        // Start FPS monitoring after initial load
+        setTimeout(() => {
+            measureFPS();
+        }, 2000);
+    </script>
+    
+    <!-- Main JavaScript -->
     <script src="shockwave-functions.js"></script>
+    
+    <!-- Analytics placeholder -->
+    <script>
+        // Google Analytics or other tracking code would go here
+        console.log('📈 Analytics initialized');
+    </script>
 </body>
-</html>
+</html>'''
 
