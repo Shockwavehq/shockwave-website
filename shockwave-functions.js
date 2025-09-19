@@ -984,6 +984,324 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeCalendarModal();
 });
+// ===== HERO SECTION ANIMATIONS =====
+
+// Neural Network Background Animation
+class NeuralNetworkBackground {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.connections = [];
+        this.mousePos = { x: 0, y: 0 };
+        
+        this.init();
+        this.bindEvents();
+        this.animate();
+    }
+    
+    init() {
+        this.resize();
+        this.createParticles();
+    }
+    
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+    
+    createParticles() {
+        const particleCount = Math.floor((this.canvas.width * this.canvas.height) / 15000);
+        this.particles = [];
+        
+        for (let i = 0; i < particleCount; i++) {
+            this.particles.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                size: Math.random() * 2 + 1,
+                opacity: Math.random() * 0.5 + 0.2
+            });
+        }
+    }
+    
+    bindEvents() {
+        window.addEventListener('resize', () => this.resize());
+        window.addEventListener('mousemove', (e) => {
+            this.mousePos.x = e.clientX;
+            this.mousePos.y = e.clientY;
+        });
+    }
+    
+    animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Update particles
+        this.particles.forEach(particle => {
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            
+            // Boundary wrapping
+            if (particle.x < 0) particle.x = this.canvas.width;
+            if (particle.x > this.canvas.width) particle.x = 0;
+            if (particle.y < 0) particle.y = this.canvas.height;
+            if (particle.y > this.canvas.height) particle.y = 0;
+            
+            // Mouse interaction
+            const dx = this.mousePos.x - particle.x;
+            const dy = this.mousePos.y - particle.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 100) {
+                particle.x -= dx * 0.001;
+                particle.y -= dy * 0.001;
+            }
+        });
+        
+        // Draw connections
+        this.particles.forEach((particle, i) => {
+            for (let j = i + 1; j < this.particles.length; j++) {
+                const other = this.particles[j];
+                const dx = particle.x - other.x;
+                const dy = particle.y - other.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    this.ctx.beginPath();
+                    this.ctx.strokeStyle = `rgba(209, 46, 31, ${0.2 * (1 - distance / 100)})`;
+                    this.ctx.lineWidth = 1;
+                    this.ctx.moveTo(particle.x, particle.y);
+                    this.ctx.lineTo(other.x, other.y);
+                    this.ctx.stroke();
+                }
+            }
+        });
+        
+        // Draw particles
+        this.particles.forEach(particle => {
+            this.ctx.beginPath();
+            this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            this.ctx.fillStyle = `rgba(255, 255, 255, ${particle.opacity})`;
+            this.ctx.fill();
+        });
+        
+        requestAnimationFrame(() => this.animate());
+    }
+}
+
+// Typewriter Effect
+class TypewriterEffect {
+    constructor(element, text, speed = 100) {
+        this.element = element;
+        this.text = text;
+        this.speed = speed;
+        this.currentIndex = 0;
+        
+        this.start();
+    }
+    
+    start() {
+        this.element.textContent = '';
+        this.type();
+    }
+    
+    type() {
+        if (this.currentIndex < this.text.length) {
+            this.element.textContent += this.text[this.currentIndex];
+            this.currentIndex++;
+            setTimeout(() => this.type(), this.speed);
+        } else {
+            // Remove cursor after typing
+            setTimeout(() => {
+                this.element.classList.add('typing-complete');
+            }, 1000);
+        }
+    }
+}
+
+// Animated Counter
+class AnimatedCounter {
+    constructor(element, target, duration = 2000) {
+        this.element = element;
+        this.target = parseInt(target);
+        this.duration = duration;
+        this.current = 0;
+        
+        this.animate();
+    }
+    
+    animate() {
+        const startTime = performance.now();
+        const startValue = this.current;
+        
+        const update = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / this.duration, 1);
+            
+            // Easing function (ease-out)
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            
+            this.current = Math.floor(startValue + (this.target - startValue) * easeOut);
+            this.element.textContent = this.formatNumber(this.current);
+            
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            }
+        };
+        
+        requestAnimationFrame(update);
+    }
+    
+    formatNumber(num) {
+        return num.toLocaleString();
+    }
+}
+
+// Hero Section Controller
+class HeroSectionController {
+    constructor() {
+        this.init();
+    }
+    
+    init() {
+        // Initialize neural network background
+        this.neuralNetwork = new NeuralNetworkBackground('neuralCanvas');
+        
+        // Start animations when page loads
+        window.addEventListener('load', () => {
+            this.startAnimations();
+        });
+        
+        // Industry card interactions
+        this.bindIndustryCards();
+    }
+    
+    startAnimations() {
+        // Typewriter effect for headline
+        const typewriterElement = document.querySelector('.typewriter-text');
+        if (typewriterElement) {
+            const text = typewriterElement.dataset.text;
+            new TypewriterEffect(typewriterElement, text, 80);
+        }
+        
+        // Staggered fade-in animations
+        gsap.timeline()
+            .to('.hero-subhead', { 
+                opacity: 1, 
+                y: 0, 
+                duration: 0.8, 
+                delay: 2.5,
+                ease: 'power2.out' 
+            })
+            .to('.industry-quick-select', { 
+                opacity: 1, 
+                y: 0, 
+                duration: 0.8, 
+                delay: 0.3,
+                ease: 'power2.out' 
+            })
+            .to('.roi-ticker-container', { 
+                opacity: 1, 
+                y: 0, 
+                duration: 0.8, 
+                delay: 0.2,
+                ease: 'power2.out' 
+            })
+            .to('.hero-cta-container', { 
+                opacity: 1, 
+                y: 0, 
+                duration: 0.8, 
+                delay: 0.1,
+                ease: 'power2.out' 
+            });
+        
+        // Start counters after delay
+        setTimeout(() => {
+            this.startCounters();
+        }, 3000);
+    }
+    
+    startCounters() {
+        // ROI Counter
+        const roiCounter = document.querySelector('.roi-counter');
+        if (roiCounter) {
+            new AnimatedCounter(roiCounter, roiCounter.dataset.target, 3000);
+        }
+        
+        // Live ticker counter
+        const liveCounter = document.querySelector('.live-counter');
+        if (liveCounter) {
+            new AnimatedCounter(liveCounter, liveCounter.dataset.target, 2000);
+        }
+        
+        // Metric bubbles
+        document.querySelectorAll('.metric-bubble .counter').forEach((counter, index) => {
+            setTimeout(() => {
+                new AnimatedCounter(counter, counter.dataset.target, 2500);
+            }, index * 500);
+        });
+    }
+    
+    bindIndustryCards() {
+        document.querySelectorAll('.industry-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const industry = card.dataset.industry;
+                const roi = card.dataset.roi;
+                
+                // Add selection effect
+                document.querySelectorAll('.industry-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                
+                // Update ROI counter to industry-specific value
+                const roiCounter = document.querySelector('.roi-counter');
+                if (roiCounter) {
+                    new AnimatedCounter(roiCounter, roi, 1500);
+                }
+                
+                // Trigger industry selection event
+                window.dispatchEvent(new CustomEvent('industrySelected', {
+                    detail: { industry, roi }
+                }));
+                
+                // Auto-open ROI calculator after selection
+                setTimeout(() => {
+                    openROICalculator(industry);
+                }, 1000);
+            });
+            
+            // Hover effects
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, { 
+                    scale: 1.05, 
+                    duration: 0.3, 
+                    ease: 'power2.out' 
+                });
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, { 
+                    scale: 1, 
+                    duration: 0.3, 
+                    ease: 'power2.out' 
+                });
+            });
+        });
+    }
+}
+
+// Initialize hero section when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    new HeroSectionController();
+});
+
+// ROI Calculator trigger function (to be implemented in next section)
+function openROICalculator(selectedIndustry = null) {
+    console.log('Opening ROI Calculator for:', selectedIndustry);
+    // Implementation will come in the next section
+}
 // =========================================
 // END SHOCKWAVE FUNCTIONALITY
 // =========================================
