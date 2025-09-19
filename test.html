@@ -1,20 +1,81 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shockwave CDN Test</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/shockwavehq/shockwave-website@main/shockwave-styles.css">
+    <title>ShockwaveHQ - AI Automations That Generate $50K+ Monthly ROI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shockwave-styles.css">
 </head>
 <body>
-    <div class="sw-container">
-        <h1 class="sw-h1">Shockwave CDN Test</h1>
-        <button class="sw-btn sw-btn--primary" data-sw-action="track-cta">Test Button</button>
-        <div class="sw-card sw-mt-lg">
-            <p class="sw-body">If you can see styled content, the CDN is working correctly.</p>
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="fade-in">
+                    AI Automations That Generate
+                    <span class="roi-highlight">
+                        $<span class="roi-counter">50,000</span>+ Monthly ROI
+                    </span>
+                </h1>
+                
+                <p class="fade-in fade-in-delay-1">
+                    Pick Your Industry. See Your Impact. <span class="trademark">Impact on Contact™</span>
+                </p>
+                
+                <!-- Industry Cards -->
+                <div class="industry-grid fade-in fade-in-delay-2">
+                    <div class="industry-card" data-industry="dental" data-roi="8400">
+                        <span class="industry-icon">🦷</span>
+                        <span class="industry-name">Dental</span>
+                        <span class="industry-roi">$1,497-$8,497</span>
+                    </div>
+                    <div class="industry-card" data-industry="legal" data-roi="12500">
+                        <span class="industry-icon">⚖️</span>
+                        <span class="industry-name">Legal</span>
+                        <span class="industry-roi">$2,497-$12,497</span>
+                    </div>
+                    <div class="industry-card" data-industry="realestate" data-roi="15000">
+                        <span class="industry-icon">🏠</span>
+                        <span class="industry-name">Real Estate</span>
+                        <span class="industry-roi">$3,497-$15,497</span>
+                    </div>
+                    <div class="industry-card" data-industry="restaurants" data-roi="6800">
+                        <span class="industry-icon">🍽️</span>
+                        <span class="industry-name">Restaurants</span>
+                        <span class="industry-roi">$997-$6,497</span>
+                    </div>
+                    <div class="industry-card" data-industry="fitness" data-roi="9200">
+                        <span class="industry-icon">💪</span>
+                        <span class="industry-name">Fitness</span>
+                        <span class="industry-roi">$1,297-$9,497</span>
+                    </div>
+                    <div class="industry-card" data-industry="medical" data-roi="18000">
+                        <span class="industry-icon">🏥</span>
+                        <span class="industry-name">Medical</span>
+                        <span class="industry-roi">$4,997-$18,997</span>
+                    </div>
+                </div>
+                
+                <!-- Stats Ticker -->
+                <div class="stats-ticker fade-in fade-in-delay-2">
+                    <span>🔥 Businesses served today:</span>
+                    <span class="stats-number">247</span>
+                </div>
+                
+                <!-- Primary CTA -->
+                <button class="cta-primary pulse-animation fade-in fade-in-delay-3" onclick="openROICalculator()">
+                    📊 Calculate My Industry ROI
+                </button>
+            </div>
+            
+            <div class="hero-visual fade-in fade-in-delay-1">
+                <img src="https://via.placeholder.com/500x400/1A1A1A/D12E1F?text=AI+Dashboard" alt="AI Automation Dashboard">
+            </div>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/gh/shockwavehq/shockwave-website@main/shockwave-functions.js"></script>
+    </section>
+
+    <script src="shockwave-functions.js"></script>
 </body>
 </html>
+
