@@ -10,3 +10,5 @@ Complete design system and functionality for ShockwaveHQ AI automation website.
 
 JavaScript (Core Functionality)
 <script src="https://cdn.jsdelivr.net/gh/shockwavehq/shockwave-website@main/shockwave-functions.js"></script>
+
+https://shockwavehq.github.io/shockwave-website/test.html
