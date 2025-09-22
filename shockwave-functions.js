@@ -1,16 +1,16 @@
 /* =====================================================
-   SHOCKWAVE ULTIMATE HERO - INTERACTIVE CONTROLLER
-   Performance: <100ms interactions, conversion tracking
+   SHOCKWAVE HERO - COMPLETE REWRITE
+   Clean, optimized, conversion-focused
    ===================================================== */
 
-class ShockwaveUltimateHero {
+class ShockwaveHero {
   constructor() {
     this.counters = [];
     this.flowSteps = [];
-    this.currentFlowStep = 0;
-    this.spotCount = 3;
+    this.currentStep = 0;
+    this.spotsCount = 3;
     this.isVisible = false;
-    this.performanceMetrics = {};
+    this.flowInterval = null;
     
     this.init();
   }
@@ -24,145 +24,169 @@ class ShockwaveUltimateHero {
   }
 
   setup() {
-    this.heroSection = document.querySelector('.shockwave-neural-hero');
+    this.heroSection = document.querySelector('.shockwave-hero');
     
     if (!this.heroSection) {
-      console.warn('Shockwave Ultimate Hero not found');
+      console.warn('Shockwave Hero section not found');
       return;
     }
 
-    this.initializeCounters();
-    this.initializeFlowAnimation();
-    this.initializeUrgencySystem();
-    this.initializeScrollTrigger();
-    this.initializeAnalytics();
-    this.initializeInteractions();
-    this.monitorPerformance();
+    this.initCounters();
+    this.initFlowAnimation();
+    this.initUrgencySystem();
+    this.initScrollObserver();
+    this.initInteractions();
+    this.initAnalytics();
     
-    console.log('🚀 Shockwave Ultimate Hero initialized');
+    console.log('🚀 Shockwave Hero initialized successfully');
   }
 
-  // Enhanced Counter System
-  initializeCounters() {
-    const counterElements = document.querySelectorAll('[data-animate]');
+  // Counter Animation System
+  initCounters() {
+    const counters = document.querySelectorAll('.counter');
     
-    counterElements.forEach((element, index) => {
-      const finalCount = parseInt(element.dataset.animate);
+    counters.forEach((counter, index) => {
+      const target = parseInt(counter.dataset.target) || 0;
       
       this.counters.push({
-        element: element,
+        element: counter,
+        target: target,
         current: 0,
-        target: finalCount,
-        increment: Math.max(1, Math.ceil(finalCount / 25)),
-        hasAnimated: false,
-        delay: index * 200 // Stagger animations
+        increment: Math.max(1, Math.ceil(target / 30)),
+        animated: false,
+        delay: index * 200
       });
+      
+      // Set initial value
+      counter.textContent = '0';
     });
   }
 
-  animateCounter(counter) {
-    if (counter.hasAnimated) return;
+  animateCounter(counterData) {
+    if (counterData.animated) return;
     
-    counter.hasAnimated = true;
+    counterData.animated = true;
     
     const animate = () => {
-      if (counter.current < counter.target) {
-        counter.current += counter.increment;
-        if (counter.current > counter.target) {
-          counter.current = counter.target;
+      if (counterData.current < counterData.target) {
+        counterData.current += counterData.increment;
+        
+        if (counterData.current > counterData.target) {
+          counterData.current = counterData.target;
         }
         
-        counter.element.textContent = counter.current;
+        counterData.element.textContent = counterData.current;
         
-        if (counter.current < counter.target) {
+        if (counterData.current < counterData.target) {
           requestAnimationFrame(animate);
         } else {
-          // Trigger completion event
+          // Counter completed
           this.trackEvent('Counter Completed', {
-            target: counter.target,
-            element: counter.element.closest('.proof-stat')?.querySelector('.stat-label')?.textContent
+            target: counterData.target,
+            element: counterData.element.closest('.stat-card')?.querySelector('.stat-label')?.textContent
           });
         }
       }
     };
     
-    setTimeout(() => requestAnimationFrame(animate), counter.delay);
+    setTimeout(() => requestAnimationFrame(animate), counterData.delay);
   }
 
-  // Enhanced Flow Animation
-  initializeFlowAnimation() {
+  // Flow Animation System
+  initFlowAnimation() {
     this.flowSteps = document.querySelectorAll('.flow-step');
     
     if (this.flowSteps.length === 0) return;
     
-    // Start flow animation after hero visibility
+    // Start flow animation after hero is visible
+    setTimeout(() => {
+      this.startFlowAnimation();
+    }, 7000); // Start after initial animations
+  }
+
+  startFlowAnimation() {
+    if (this.flowInterval) {
+      clearInterval(this.flowInterval);
+    }
+    
     this.flowInterval = setInterval(() => {
       this.animateFlowStep();
-    }, 2500);
+    }, 3000); // Change every 3 seconds
   }
 
   animateFlowStep() {
     // Remove active class from all steps
-    this.flowSteps.forEach(step => step.classList.remove('active'));
+    this.flowSteps.forEach(step => {
+      step.classList.remove('active');
+    });
     
     // Add active class to current step
-    if (this.flowSteps[this.currentFlowStep]) {
-      this.flowSteps[this.currentFlowStep].classList.add('active');
+    if (this.flowSteps[this.currentStep]) {
+      this.flowSteps[this.currentStep].classList.add('active');
       
-      // Track flow step engagement
+      // Track step view
       this.trackEvent('Flow Step Viewed', {
-        step: this.currentFlowStep + 1,
-        stepText: this.flowSteps[this.currentFlowStep].querySelector('.flow-text')?.textContent
+        step: this.currentStep + 1,
+        stepText: this.flowSteps[this.currentStep].querySelector('.flow-text')?.textContent
       });
     }
     
-    this.currentFlowStep = (this.currentFlowStep + 1) % this.flowSteps.length;
+    // Move to next step
+    this.currentStep = (this.currentStep + 1) % this.flowSteps.length;
   }
 
   // Urgency System
-  initializeUrgencySystem() {
-    const spotsElement = document.querySelector('[data-spots]');
+  initUrgencySystem() {
+    const spotsElement = document.querySelector('.spots-count');
+    const urgencyFill = document.querySelector('.urgency-fill');
     
-    if (!spotsElement) return;
+    if (!spotsElement || !urgencyFill) return;
     
-    // Simulate spot decrease every 30 seconds
+    // Decrease spots every 45 seconds
     setInterval(() => {
-      if (this.spotCount > 1) {
-        this.spotCount--;
-        spotsElement.textContent = this.spotCount;
-        spotsElement.dataset.spots = this.spotCount;
+      if (this.spotsCount > 1) {
+        this.spotsCount--;
+        spotsElement.textContent = this.spotsCount;
         
         // Update urgency bar
-        const urgencyFill = document.querySelector('.urgency-fill');
-        if (urgencyFill) {
-          const percentage = (this.spotCount / 3) * 25; // Max 25%
-          urgencyFill.style.width = `${Math.max(5, percentage)}%`;
-        }
+        const percentage = (this.spotsCount / 3) * 25;
+        urgencyFill.style.width = `${Math.max(8, percentage)}%`;
         
-        // Track urgency engagement
-        this.trackEvent('Urgency Update', {
-          spotsRemaining: this.spotCount
+        // Track urgency change
+        this.trackEvent('Urgency Updated', {
+          spotsRemaining: this.spotsCount
         });
+        
+        // Add visual emphasis
+        spotsElement.style.transform = 'scale(1.2)';
+        spotsElement.style.color = '#FF4444';
+        
+        setTimeout(() => {
+          spotsElement.style.transform = '';
+          spotsElement.style.color = '';
+        }, 500);
       }
-    }, 30000); // Every 30 seconds
+    }, 45000);
   }
 
-  // Scroll-based Visibility
-  initializeScrollTrigger() {
+  // Scroll Observer
+  initScrollObserver() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting && !this.isVisible) {
           this.isVisible = true;
           this.triggerHeroAnimations();
           
-          this.trackEvent('Hero Viewed', {
+          this.trackEvent('Hero Section Viewed', {
             timestamp: Date.now(),
-            viewportHeight: window.innerHeight
+            viewportHeight: window.innerHeight,
+            scrollPosition: window.scrollY
           });
         }
       });
     }, {
-      threshold: 0.2
+      threshold: 0.25,
+      rootMargin: '0px 0px -100px 0px'
     });
     
     observer.observe(this.heroSection);
@@ -173,63 +197,198 @@ class ShockwaveUltimateHero {
     this.counters.forEach(counter => {
       setTimeout(() => {
         this.animateCounter(counter);
-      }, counter.delay);
+      }, 6500 + counter.delay); // Start after text animations
     });
-
-    // Start flow animation after a delay
+    
+    // Additional engagement animations
     setTimeout(() => {
-      this.animateFlowStep();
-    }, 6500);
+      this.addEngagementEffects();
+    }, 8000);
   }
 
-  // Enhanced Analytics
-  initializeAnalytics() {
-    // Track all CTA clicks
-    document.querySelectorAll('[data-track]').forEach(element => {
-      element.addEventListener('click', (e) => {
-        const action = element.dataset.track;
-        const text = element.textContent?.trim() || 'Unknown';
-        
-        this.trackEvent('CTA Click', {
-          action: action,
-          text: text,
-          position: this.getElementPosition(element),
-          timestamp: Date.now()
-        });
-        
-        // Visual feedback
-        this.addClickFeedback(element);
+  addEngagementEffects() {
+    // Pulse the primary CTA periodically
+    const primaryCTA = document.querySelector('.primary-cta');
+    if (primaryCTA) {
+      setInterval(() => {
+        primaryCTA.style.transform = 'translateY(-4px) scale(1.02)';
+        setTimeout(() => {
+          primaryCTA.style.transform = '';
+        }, 300);
+      }, 8000);
+    }
+  }
+
+  // Interaction Handlers
+  initInteractions() {
+    // Primary CTA click
+    const primaryCTA = document.querySelector('.primary-cta');
+    if (primaryCTA) {
+      primaryCTA.addEventListener('click', (e) => {
+        this.handleCTAClick(e, 'Primary CTA', primaryCTA);
+      });
+    }
+
+    // Secondary buttons
+    document.querySelectorAll('.secondary-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const text = btn.textContent.trim();
+        this.handleCTAClick(e, `Secondary: ${text}`, btn);
       });
     });
 
-    // Track trust badge interactions
-    document.querySelectorAll('.trust-badge').forEach(badge => {
-      badge.addEventListener('mouseenter', () => {
-        const vertical = badge.dataset.vertical;
-        const metric = badge.querySelector('.trust-metric')?.textContent;
+    // Trust card hovers
+    document.querySelectorAll('.trust-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        const vertical = card.dataset.vertical;
+        const metric = card.querySelector('.trust-metric')?.textContent;
         
-        this.trackEvent('Trust Badge Hover', {
+        this.trackEvent('Trust Card Hovered', {
           vertical: vertical,
           metric: metric
         });
       });
     });
 
+    // Nav button
+    const navButton = document.querySelector('.nav-button');
+    if (navButton) {
+      navButton.addEventListener('click', (e) => {
+        this.handleCTAClick(e, 'Navigation CTA', navButton);
+      });
+    }
+  }
+
+  handleCTAClick(event, ctaType, element) {
+    // Prevent default for anchor links
+    if (element.tagName === 'A' && element.getAttribute('href').startsWith('#')) {
+      event.preventDefault();
+    }
+    
+    // Track the click
+    this.trackEvent('CTA Clicked', {
+      type: ctaType,
+      text: element.textContent.trim(),
+      position: this.getElementPosition(element),
+      timestamp: Date.now()
+    });
+    
+    // Visual feedback
+    this.addClickFeedback(element);
+    
+    // Handle specific actions
+    if (ctaType.includes('Primary') || ctaType.includes('Navigation')) {
+      // Scroll to booking section or trigger modal
+      this.handleBookingAction();
+    } else if (ctaType.includes('Calculate')) {
+      // Scroll to calculator
+      this.scrollToSection('#calculator');
+    } else if (ctaType.includes('Results')) {
+      // Scroll to results/case studies
+      this.scrollToSection('#results');
+    }
+  }
+
+  addClickFeedback(element) {
+    // Scale animation
+    element.style.transform = 'scale(0.95)';
+    element.style.transition = 'transform 0.1s ease';
+    
+    setTimeout(() => {
+      element.style.transform = '';
+      element.style.transition = '';
+    }, 100);
+
+    // Ripple effect for primary CTA
+    if (element.classList.contains('primary-cta')) {
+      this.createRipple(element);
+    }
+  }
+
+  createRipple(element) {
+    const ripple = document.createElement('div');
+    const rect = element.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    
+    ripple.style.cssText = `
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      width: ${size}px;
+      height: ${size}px;
+      left: ${rect.width / 2 - size / 2}px;
+      top: ${rect.height / 2 - size / 2}px;
+      transform: scale(0);
+      animation: rippleEffect 0.8s linear;
+      pointer-events: none;
+      z-index: 1000;
+    `;
+    
+    element.appendChild(ripple);
+    
+    setTimeout(() => {
+      if (ripple.parentNode) {
+        ripple.remove();
+      }
+    }, 800);
+  }
+
+  handleBookingAction() {
+    // This would typically open a booking modal or scroll to booking form
+    console.log('Booking action triggered');
+    
+    // For now, just scroll to a booking section if it exists
+    const bookingSection = document.querySelector('#pilot') || 
+                          document.querySelector('#booking') ||
+                          document.querySelector('#contact');
+    
+    if (bookingSection) {
+      this.scrollToSection(bookingSection);
+    }
+  }
+
+  scrollToSection(selector) {
+    const element = typeof selector === 'string' ? 
+                   document.querySelector(selector) : selector;
+    
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }
+
+  // Analytics System
+  initAnalytics() {
     // Track scroll depth
     this.trackScrollDepth();
+    
+    // Track time on page
+    this.startTime = Date.now();
+    
+    // Track page visibility changes
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        this.trackEvent('Page Hidden', {
+          timeOnPage: Date.now() - this.startTime
+        });
+      } else {
+        this.trackEvent('Page Visible', {
+          timeOnPage: Date.now() - this.startTime
+        });
+      }
+    });
   }
 
   trackScrollDepth() {
-    let maxScroll = 0;
     const milestones = [25, 50, 75, 100];
     const tracked = new Set();
-
-    window.addEventListener('scroll', () => {
+    
+    const checkScroll = () => {
       const scrollPercent = Math.round(
         (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
       );
-      
-      maxScroll = Math.max(maxScroll, scrollPercent);
       
       milestones.forEach(milestone => {
         if (scrollPercent >= milestone && !tracked.has(milestone)) {
@@ -240,130 +399,46 @@ class ShockwaveUltimateHero {
           });
         }
       });
-    });
-  }
-
-  // Enhanced Interactions
-  initializeInteractions() {
-    // ROI Calculator link tracking
-    const roiLinks = document.querySelectorAll('a[href="#roi-calculator"]');
-    roiLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        this.trackEvent('ROI Calculator Interest', {
-          source: 'Hero Section',
-          timestamp: Date.now()
+    };
+    
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          checkScroll();
+          ticking = false;
         });
-        
-        // Smooth scroll to calculator (when available)
-        const calculator = document.querySelector('#roi-calculator');
-        if (calculator) {
-          calculator.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
-    });
-
-    // Case studies link tracking
-    const caseLinks = document.querySelectorAll('a[href="#case-studies"]');
-    caseLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        this.trackEvent('Case Studies Interest', {
-          source: 'Hero Section',
-          timestamp: Date.now()
-        });
-        
-        // Smooth scroll to case studies (when available)
-        const caseStudies = document.querySelector('#case-studies');
-        if (caseStudies) {
-          caseStudies.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
+        ticking = true;
+      }
     });
   }
 
-  // Click Feedback Animation
-  addClickFeedback(element) {
-    element.style.transform = 'scale(0.95)';
-    element.style.transition = 'transform 0.1s ease';
-    
-    setTimeout(() => {
-      element.style.transform = '';
-      element.style.transition = '';
-    }, 100);
-
-    // Add ripple effect for buttons
-    if (element.classList.contains('primary-cta')) {
-      this.createRippleEffect(element);
-    }
-  }
-
-  createRippleEffect(element) {
-    const ripple = document.createElement('div');
-    ripple.style.cssText = `
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      transform: scale(0);
-      animation: ripple 0.6s linear;
-      pointer-events: none;
-    `;
-    
-    const rect = element.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    ripple.style.width = ripple.style.height = size + 'px';
-    ripple.style.left = (rect.width / 2 - size / 2) + 'px';
-    ripple.style.top = (rect.height / 2 - size / 2) + 'px';
-    
-    element.appendChild(ripple);
-    
-    setTimeout(() => {
-      ripple.remove();
-    }, 600);
-  }
-
-  // Performance Monitoring
-  monitorPerformance() {
-    if ('performance' in window) {
-      window.addEventListener('load', () => {
-        const perfData = performance.getEntriesByType('navigation')[0];
-        
-        this.performanceMetrics = {
-          domContentLoaded: perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
-          loadComplete: perfData.loadEventEnd - perfData.loadEventStart,
-          firstPaint: performance.getEntriesByType('paint').find(entry => entry.name === 'first-paint')?.startTime,
-          firstContentfulPaint: performance.getEntriesByType('paint').find(entry => entry.name === 'first-contentful-paint')?.startTime
-        };
-        
-        console.log('Hero Performance Metrics:', this.performanceMetrics);
-        
-        this.trackEvent('Performance Metrics', this.performanceMetrics);
-      });
-    }
-  }
-
-  // Event Tracking
   trackEvent(eventName, data = {}) {
     // Google Analytics 4
     if (typeof gtag !== 'undefined') {
       gtag('event', eventName.toLowerCase().replace(/\s+/g, '_'), {
-        event_category: 'Hero_Ultimate',
-        event_label: data.text || data.action || 'Hero_Interaction',
-        ...data
+        event_category: 'Shockwave_Hero',
+        event_label: data.text || data.type || 'Hero_Interaction',
+        custom_parameter: JSON.stringify(data)
       });
     }
 
-    // Custom analytics (if needed)
-    if (window.customAnalytics) {
+    // Facebook Pixel
+    if (typeof fbq !== 'undefined') {
+      fbq('trackCustom', eventName, data);
+    }
+
+    // Console log for development
+    console.log(`📊 ${eventName}:`, data);
+    
+    // Custom analytics endpoint (if available)
+    if (window.customAnalytics && typeof window.customAnalytics.track === 'function') {
       window.customAnalytics.track(eventName, {
-        section: 'Hero Ultimate',
+        section: 'Hero',
+        timestamp: Date.now(),
         ...data
       });
     }
-
-    console.log('📊 Event:', eventName, data);
   }
 
   // Utility Methods
@@ -373,50 +448,44 @@ class ShockwaveUltimateHero {
       top: rect.top + window.scrollY,
       left: rect.left + window.scrollX,
       width: rect.width,
-      height: rect.height
+      height: rect.height,
+      centerX: rect.left + rect.width / 2,
+      centerY: rect.top + rect.height / 2
     };
   }
 
-  // Public Methods for External Control
-  refreshCounters() {
+  // Public Methods
+  pauseAnimations() {
+    if (this.flowInterval) {
+      clearInterval(this.flowInterval);
+      this.flowInterval = null;
+    }
+  }
+
+  resumeAnimations() {
+    if (!this.flowInterval && this.isVisible) {
+      this.startFlowAnimation();
+    }
+  }
+
+  resetCounters() {
     this.counters.forEach(counter => {
-      counter.hasAnimated = false;
+      counter.animated = false;
       counter.current = 0;
       counter.element.textContent = '0';
     });
   }
 
-  pauseAnimations() {
-    if (this.flowInterval) {
-      clearInterval(this.flowInterval);
-    }
-  }
-
-  resumeAnimations() {
-    this.initializeFlowAnimation();
+  destroy() {
+    this.pauseAnimations();
+    // Remove event listeners if needed
   }
 }
 
-// Auto-initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  window.ShockwaveUltimateHero = new ShockwaveUltimateHero();
-});
-
-// Handle page visibility changes
-document.addEventListener('visibilitychange', () => {
-  if (window.ShockwaveUltimateHero) {
-    if (document.hidden) {
-      window.ShockwaveUltimateHero.pauseAnimations();
-    } else {
-      window.ShockwaveUltimateHero.resumeAnimations();
-    }
-  }
-});
-
-// CSS Animation for ripple effect
+// CSS for ripple effect
 const rippleCSS = document.createElement('style');
 rippleCSS.textContent = `
-  @keyframes ripple {
+  @keyframes rippleEffect {
     to {
       transform: scale(4);
       opacity: 0;
@@ -424,3 +493,39 @@ rippleCSS.textContent = `
   }
 `;
 document.head.appendChild(rippleCSS);
+
+// Auto-initialize
+document.addEventListener('DOMContentLoaded', () => {
+  window.shockwaveHero = new ShockwaveHero();
+});
+
+// Handle page visibility changes
+document.addEventListener('visibilitychange', () => {
+  if (window.shockwaveHero) {
+    if (document.hidden) {
+      window.shockwaveHero.pauseAnimations();
+    } else {
+      window.shockwaveHero.resumeAnimations();
+    }
+  }
+});
+
+// Performance monitoring
+if ('performance' in window) {
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const perfData = performance.getEntriesByType('navigation')[0];
+      const paintData = performance.getEntriesByType('paint');
+      
+      if (perfData && window.shockwaveHero) {
+        window.shockwaveHero.trackEvent('Performance Metrics', {
+          domContentLoaded: Math.round(perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart),
+          loadComplete: Math.round(perfData.loadEventEnd - perfData.loadEventStart),
+          firstPaint: paintData.find(entry => entry.name === 'first-paint')?.startTime,
+          firstContentfulPaint: paintData.find(entry => entry.name === 'first-contentful-paint')?.startTime
+        });
+      }
+    }, 1000);
+  });
+}
+
