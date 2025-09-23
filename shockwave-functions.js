@@ -1,531 +1,428 @@
-/* =====================================================
-   SHOCKWAVE HERO - COMPLETE REWRITE
-   Clean, optimized, conversion-focused
-   ===================================================== */
+ * 🔥 SHOCKWAVE FUNCTIONS - Impact on Contact™
+ * Premium AI Automation Agency JavaScript
+ * Performance: <200ms interactions, Mobile-optimized
+ * Version: 1.0.0
+ */
 
-class ShockwaveHero {
-  constructor() {
-    this.counters = [];
-    this.flowSteps = [];
-    this.currentStep = 0;
-    this.spotsCount = 3;
-    this.isVisible = false;
-    this.flowInterval = null;
-    
-    this.init();
-  }
+(function() {
+  'use strict';
 
-  init() {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => this.setup());
-    } else {
-      this.setup();
-    }
-  }
-
-  setup() {
-    this.heroSection = document.querySelector('.shockwave-hero');
+  // ===================================================================
+  // SHOCKWAVE CORE CONFIGURATION
+  // ===================================================================
+  
+  const SHOCKWAVE_CONFIG = {
+    // Brand Identity
+    brand: {
+      name: 'ShockwaveHQ',
+      tagline: 'Impact on Contact™',
+      primaryColor: '#D12E1F'
+    },
     
-    if (!this.heroSection) {
-      console.warn('Shockwave Hero section not found');
-      return;
-    }
-
-    this.initCounters();
-    this.initFlowAnimation();
-    this.initUrgencySystem();
-    this.initScrollObserver();
-    this.initInteractions();
-    this.initAnalytics();
+    // Performance Thresholds
+    performance: {
+      maxInteractionDelay: 200, // milliseconds
+      animationDuration: 300,
+      debounceDelay: 250
+    },
     
-    console.log('🚀 Shockwave Hero initialized successfully');
-  }
-
-  // Counter Animation System
-  initCounters() {
-    const counters = document.querySelectorAll('.counter');
-    
-    counters.forEach((counter, index) => {
-      const target = parseInt(counter.dataset.target) || 0;
-      
-      this.counters.push({
-        element: counter,
-        target: target,
-        current: 0,
-        increment: Math.max(1, Math.ceil(target / 30)),
-        animated: false,
-        delay: index * 200
-      });
-      
-      // Set initial value
-      counter.textContent = '0';
-    });
-  }
-
-  animateCounter(counterData) {
-    if (counterData.animated) return;
-    
-    counterData.animated = true;
-    
-    const animate = () => {
-      if (counterData.current < counterData.target) {
-        counterData.current += counterData.increment;
-        
-        if (counterData.current > counterData.target) {
-          counterData.current = counterData.target;
-        }
-        
-        counterData.element.textContent = counterData.current;
-        
-        if (counterData.current < counterData.target) {
-          requestAnimationFrame(animate);
-        } else {
-          // Counter completed
-          this.trackEvent('Counter Completed', {
-            target: counterData.target,
-            element: counterData.element.closest('.stat-card')?.querySelector('.stat-label')?.textContent
-          });
-        }
+    // Conversion Tracking
+    analytics: {
+      gtmId: 'GTM-XXXXXXX', // Replace with actual GTM ID
+      events: {
+        heroView: 'sw_hero_view',
+        ctaClick: 'sw_cta_click',
+        formSubmit: 'sw_form_submit',
+        calculatorUse: 'sw_calculator_use'
       }
-    };
-    
-    setTimeout(() => requestAnimationFrame(animate), counterData.delay);
-  }
+    }
+  };
 
-  // Flow Animation System
-  initFlowAnimation() {
-    this.flowSteps = document.querySelectorAll('.flow-step');
-    
-    if (this.flowSteps.length === 0) return;
-    
-    // Start flow animation after hero is visible
-    setTimeout(() => {
-      this.startFlowAnimation();
-    }, 7000); // Start after initial animations
-  }
-
-  startFlowAnimation() {
-    if (this.flowInterval) {
-      clearInterval(this.flowInterval);
+  // ===================================================================
+  // ROI CALCULATOR (CONVERSION TOOL)
+  // ===================================================================
+  
+  class ShockwaveROICalculator {
+    constructor() {
+      this.init();
     }
     
-    this.flowInterval = setInterval(() => {
-      this.animateFlowStep();
-    }, 3000); // Change every 3 seconds
-  }
-
-  animateFlowStep() {
-    // Remove active class from all steps
-    this.flowSteps.forEach(step => {
-      step.classList.remove('active');
-    });
-    
-    // Add active class to current step
-    if (this.flowSteps[this.currentStep]) {
-      this.flowSteps[this.currentStep].classList.add('active');
+    init() {
+      const calculatorContainer = document.querySelector('.sw-roi-calculator');
+      if (!calculatorContainer) return;
       
-      // Track step view
-      this.trackEvent('Flow Step Viewed', {
-        step: this.currentStep + 1,
-        stepText: this.flowSteps[this.currentStep].querySelector('.flow-text')?.textContent
-      });
+      this.createCalculatorHTML();
+      this.bindEvents();
     }
     
-    // Move to next step
-    this.currentStep = (this.currentStep + 1) % this.flowSteps.length;
-  }
-
-  // Urgency System
-  initUrgencySystem() {
-    const spotsElement = document.querySelector('.spots-count');
-    const urgencyFill = document.querySelector('.urgency-fill');
-    
-    if (!spotsElement || !urgencyFill) return;
-    
-    // Decrease spots every 45 seconds
-    setInterval(() => {
-      if (this.spotsCount > 1) {
-        this.spotsCount--;
-        spotsElement.textContent = this.spotsCount;
-        
-        // Update urgency bar
-        const percentage = (this.spotsCount / 3) * 25;
-        urgencyFill.style.width = `${Math.max(8, percentage)}%`;
-        
-        // Track urgency change
-        this.trackEvent('Urgency Updated', {
-          spotsRemaining: this.spotsCount
-        });
-        
-        // Add visual emphasis
-        spotsElement.style.transform = 'scale(1.2)';
-        spotsElement.style.color = '#FF4444';
-        
-        setTimeout(() => {
-          spotsElement.style.transform = '';
-          spotsElement.style.color = '';
-        }, 500);
-      }
-    }, 45000);
-  }
-
-  // Scroll Observer
-  initScrollObserver() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !this.isVisible) {
-          this.isVisible = true;
-          this.triggerHeroAnimations();
+    createCalculatorHTML() {
+      const container = document.querySelector('.sw-roi-calculator');
+      container.innerHTML = `
+        <div class="sw-calculator-wrapper">
+          <h3>Revenue Recovery Calculator</h3>
+          <p>Discover how much revenue you're losing to slow response times</p>
           
-          this.trackEvent('Hero Section Viewed', {
-            timestamp: Date.now(),
-            viewportHeight: window.innerHeight,
-            scrollPosition: window.scrollY
-          });
-        }
-      });
-    }, {
-      threshold: 0.25,
-      rootMargin: '0px 0px -100px 0px'
-    });
-    
-    observer.observe(this.heroSection);
-  }
-
-  triggerHeroAnimations() {
-    // Animate counters with stagger
-    this.counters.forEach(counter => {
-      setTimeout(() => {
-        this.animateCounter(counter);
-      }, 6500 + counter.delay); // Start after text animations
-    });
-    
-    // Additional engagement animations
-    setTimeout(() => {
-      this.addEngagementEffects();
-    }, 8000);
-  }
-
-  addEngagementEffects() {
-    // Pulse the primary CTA periodically
-    const primaryCTA = document.querySelector('.primary-cta');
-    if (primaryCTA) {
-      setInterval(() => {
-        primaryCTA.style.transform = 'translateY(-4px) scale(1.02)';
-        setTimeout(() => {
-          primaryCTA.style.transform = '';
-        }, 300);
-      }, 8000);
-    }
-  }
-
-  // Interaction Handlers
-  initInteractions() {
-    // Primary CTA click
-    const primaryCTA = document.querySelector('.primary-cta');
-    if (primaryCTA) {
-      primaryCTA.addEventListener('click', (e) => {
-        this.handleCTAClick(e, 'Primary CTA', primaryCTA);
-      });
-    }
-
-    // Secondary buttons
-    document.querySelectorAll('.secondary-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const text = btn.textContent.trim();
-        this.handleCTAClick(e, `Secondary: ${text}`, btn);
-      });
-    });
-
-    // Trust card hovers
-    document.querySelectorAll('.trust-card').forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        const vertical = card.dataset.vertical;
-        const metric = card.querySelector('.trust-metric')?.textContent;
-        
-        this.trackEvent('Trust Card Hovered', {
-          vertical: vertical,
-          metric: metric
-        });
-      });
-    });
-
-    // Nav button
-    const navButton = document.querySelector('.nav-button');
-    if (navButton) {
-      navButton.addEventListener('click', (e) => {
-        this.handleCTAClick(e, 'Navigation CTA', navButton);
-      });
-    }
-  }
-
-  handleCTAClick(event, ctaType, element) {
-    // Prevent default for anchor links
-    if (element.tagName === 'A' && element.getAttribute('href').startsWith('#')) {
-      event.preventDefault();
+          <div class="sw-calculator-form">
+            <div class="sw-form-group">
+              <label class="sw-form-label">Monthly Qualified Leads</label>
+              <input type="number" id="sw-monthly-leads" class="sw-form-input" placeholder="50" min="1">
+            </div>
+            
+            <div class="sw-form-group">
+              <label class="sw-form-label">Average Deal Value ($)</label>
+              <input type="number" id="sw-deal-value" class="sw-form-input" placeholder="2500" min="1">
+            </div>
+            
+            <div class="sw-form-group">
+              <label class="sw-form-label">Current Response Time</label>
+              <select id="sw-response-time" class="sw-form-input">
+                <option value="5">Under 5 minutes</option>
+                <option value="30" selected>30 minutes - 2 hours</option>
+                <option value="120">2+ hours</option>
+                <option value="1440">Next day</option>
+              </select>
+            </div>
+            
+            <button type="button" class="sw-cta sw-calculate-btn">Calculate Revenue Recovery</button>
+          </div>
+          
+          <div class="sw-results" style="display: none;">
+            <div class="sw-results-grid">
+              <div class="sw-result-card">
+                <h4>Monthly Revenue Loss</h4>
+                <div class="sw-result-value" id="sw-monthly-loss">$0</div>
+              </div>
+              <div class="sw-result-card">
+                <h4>Annual Revenue Loss</h4>
+                <div class="sw-result-value" id="sw-annual-loss">$0</div>
+              </div>
+              <div class="sw-result-card">
+                <h4>ROI with Shockwave</h4>
+                <div class="sw-result-value" id="sw-roi-percentage">0%</div>
+              </div>
+            </div>
+            <button type="button" class="sw-cta sw-book-audit">Book Revenue Audit</button>
+          </div>
+        </div>
+      `;
     }
     
-    // Track the click
-    this.trackEvent('CTA Clicked', {
-      type: ctaType,
-      text: element.textContent.trim(),
-      position: this.getElementPosition(element),
-      timestamp: Date.now()
-    });
-    
-    // Visual feedback
-    this.addClickFeedback(element);
-    
-    // Handle specific actions
-    if (ctaType.includes('Primary') || ctaType.includes('Navigation')) {
-      // Scroll to booking section or trigger modal
-      this.handleBookingAction();
-    } else if (ctaType.includes('Calculate')) {
-      // Scroll to calculator
-      this.scrollToSection('#calculator');
-    } else if (ctaType.includes('Results')) {
-      // Scroll to results/case studies
-      this.scrollToSection('#results');
-    }
-  }
-
-  addClickFeedback(element) {
-    // Scale animation
-    element.style.transform = 'scale(0.95)';
-    element.style.transition = 'transform 0.1s ease';
-    
-    setTimeout(() => {
-      element.style.transform = '';
-      element.style.transition = '';
-    }, 100);
-
-    // Ripple effect for primary CTA
-    if (element.classList.contains('primary-cta')) {
-      this.createRipple(element);
-    }
-  }
-
-  createRipple(element) {
-    const ripple = document.createElement('div');
-    const rect = element.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    
-    ripple.style.cssText = `
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      width: ${size}px;
-      height: ${size}px;
-      left: ${rect.width / 2 - size / 2}px;
-      top: ${rect.height / 2 - size / 2}px;
-      transform: scale(0);
-      animation: rippleEffect 0.8s linear;
-      pointer-events: none;
-      z-index: 1000;
-    `;
-    
-    element.appendChild(ripple);
-    
-    setTimeout(() => {
-      if (ripple.parentNode) {
-        ripple.remove();
+    bindEvents() {
+      const calculateBtn = document.querySelector('.sw-calculate-btn');
+      const bookAuditBtn = document.querySelector('.sw-book-audit');
+      
+      if (calculateBtn) {
+        calculateBtn.addEventListener('click', () => this.calculateROI());
       }
-    }, 800);
-  }
-
-  handleBookingAction() {
-    // This would typically open a booking modal or scroll to booking form
-    console.log('Booking action triggered');
-    
-    // For now, just scroll to a booking section if it exists
-    const bookingSection = document.querySelector('#pilot') || 
-                          document.querySelector('#booking') ||
-                          document.querySelector('#contact');
-    
-    if (bookingSection) {
-      this.scrollToSection(bookingSection);
+      
+      if (bookAuditBtn) {
+        bookAuditBtn.addEventListener('click', () => this.trackEvent('calculator_to_booking'));
+      }
     }
-  }
-
-  scrollToSection(selector) {
-    const element = typeof selector === 'string' ? 
-                   document.querySelector(selector) : selector;
     
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
+    calculateROI() {
+      const monthlyLeads = parseInt(document.getElementById('sw-monthly-leads').value) || 0;
+      const dealValue = parseInt(document.getElementById('sw-deal-value').value) || 0;
+      const responseTime = parseInt(document.getElementById('sw-response-time').value) || 30;
+      
+      // Shockwave conversion rate advantage (based on MIT research)
+      const conversionMultiplier = responseTime <= 5 ? 1 : 21;
+      const currentConversion = 0.15; // 15% baseline
+      const shockwaveConversion = currentConversion * conversionMultiplier;
+      
+      // Calculate losses
+      const currentRevenue = monthlyLeads * dealValue * currentConversion;
+      const potentialRevenue = monthlyLeads * dealValue * shockwaveConversion;
+      const monthlyLoss = potentialRevenue - currentRevenue;
+      const annualLoss = monthlyLoss * 12;
+      
+      // ROI calculation (assuming Growth tier at $6500/month)
+      const shockwaveCost = 6500 * 12; // Annual cost
+      const roi = ((annualLoss - shockwaveCost) / shockwaveCost) * 100;
+      
+      // Display results
+      document.getElementById('sw-monthly-loss').textContent = this.formatCurrency(monthlyLoss);
+      document.getElementById('sw-annual-loss').textContent = this.formatCurrency(annualLoss);
+      document.getElementById('sw-roi-percentage').textContent = Math.round(roi) + '%';
+      
+      // Show results with animation
+      const resultsDiv = document.querySelector('.sw-results');
+      resultsDiv.style.display = 'block';
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Track calculator use
+      this.trackEvent('calculator_completed', {
+        monthly_leads: monthlyLeads,
+        deal_value: dealValue,
+        response_time: responseTime,
+        calculated_roi: Math.round(roi)
       });
     }
+    
+    formatCurrency(amount) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(amount);
+    }
+    
+    trackEvent(eventName, parameters = {}) {
+      if (typeof gtag !== 'undefined') {
+        gtag('event', eventName, {
+          event_category: 'ROI Calculator',
+          ...parameters
+        });
+      }
+    }
   }
 
-  // Analytics System
-  initAnalytics() {
-    // Track scroll depth
-    this.trackScrollDepth();
+  // ===================================================================
+  // FORM ENHANCEMENT SYSTEM
+  // ===================================================================
+  
+  class ShockwaveFormHandler {
+    constructor() {
+      this.init();
+    }
     
-    // Track time on page
-    this.startTime = Date.now();
+    init() {
+      this.enhanceForms();
+      this.setupValidation();
+    }
     
-    // Track page visibility changes
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        this.trackEvent('Page Hidden', {
-          timeOnPage: Date.now() - this.startTime
-        });
+    enhanceForms() {
+      const forms = document.querySelectorAll('.sw-form, .sw-lead-form');
+      forms.forEach(form => {
+        this.addProgressIndicator(form);
+        this.enableRealTimeValidation(form);
+      });
+    }
+    
+    addProgressIndicator(form) {
+      const inputs = form.querySelectorAll('input[required], select[required]');
+      const progressBar = document.createElement('div');
+      progressBar.className = 'sw-form-progress';
+      progressBar.innerHTML = '<div class="sw-form-progress-bar"></div>';
+      
+      form.insertBefore(progressBar, form.firstChild);
+      
+      inputs.forEach(input => {
+        input.addEventListener('input', () => this.updateProgress(form));
+        input.addEventListener('change', () => this.updateProgress(form));
+      });
+    }
+    
+    updateProgress(form) {
+      const inputs = form.querySelectorAll('input[required], select[required]');
+      const completed = Array.from(inputs).filter(input => input.value.trim() !== '').length;
+      const progress = (completed / inputs.length) * 100;
+      
+      const progressBar = form.querySelector('.sw-form-progress-bar');
+      if (progressBar) {
+        progressBar.style.width = progress + '%';
+        progressBar.style.background = progress === 100 ? 
+          SHOCKWAVE_CONFIG.brand.primaryColor : '#E2E8F0';
+      }
+    }
+    
+    enableRealTimeValidation(form) {
+      const inputs = form.querySelectorAll('input, select');
+      inputs.forEach(input => {
+        input.addEventListener('blur', () => this.validateField(input));
+      });
+    }
+    
+    validateField(input) {
+      const isValid = input.checkValidity();
+      const errorMsg = input.parentNode.querySelector('.sw-field-error');
+      
+      if (!isValid) {
+        if (!errorMsg) {
+          const error = document.createElement('div');
+          error.className = 'sw-field-error';
+          error.textContent = input.validationMessage;
+          input.parentNode.appendChild(error);
+        }
+        input.classList.add('sw-field-invalid');
       } else {
-        this.trackEvent('Page Visible', {
-          timeOnPage: Date.now() - this.startTime
-        });
+        if (errorMsg) errorMsg.remove();
+        input.classList.remove('sw-field-invalid');
+        input.classList.add('sw-field-valid');
       }
-    });
+    }
+    
+    setupValidation() {
+      // Add validation styles
+      const style = document.createElement('style');
+      style.textContent = `
+        .sw-form-progress {
+          height: 4px;
+          background: #E2E8F0;
+          border-radius: 2px;
+          margin-bottom: 1rem;
+          overflow: hidden;
+        }
+        .sw-form-progress-bar {
+          height: 100%;
+          background: ${SHOCKWAVE_CONFIG.brand.primaryColor};
+          width: 0%;
+          transition: width 0.3s ease;
+        }
+        .sw-field-invalid {
+          border-color: #E53E3E !important;
+          box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1) !important;
+        }
+        .sw-field-valid {
+          border-color: #38A169 !important;
+        }
+        .sw-field-error {
+          color: #E53E3E;
+          font-size: 0.875rem;
+          margin-top: 0.25rem;
+        }
+      `;
+      document.head.appendChild(style);
+    }
   }
 
-  trackScrollDepth() {
-    const milestones = [25, 50, 75, 100];
-    const tracked = new Set();
+  // ===================================================================
+  // PERFORMANCE MONITORING
+  // ===================================================================
+  
+  class ShockwavePerformanceMonitor {
+    constructor() {
+      this.metrics = {};
+      this.init();
+    }
     
-    const checkScroll = () => {
-      const scrollPercent = Math.round(
-        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
-      );
-      
-      milestones.forEach(milestone => {
-        if (scrollPercent >= milestone && !tracked.has(milestone)) {
-          tracked.add(milestone);
-          this.trackEvent('Scroll Depth', {
-            milestone: milestone,
-            section: 'Hero'
-          });
+    init() {
+      this.measurePageLoad();
+      this.setupInteractionTracking();
+    }
+    
+    measurePageLoad() {
+      window.addEventListener('load', () => {
+        if ('performance' in window) {
+          const navigation = performance.getEntriesByType('navigation')[0];
+          this.metrics.loadTime = navigation.loadEventEnd - navigation.fetchStart;
+          this.metrics.domReady = navigation.domContentLoadedEventEnd - navigation.fetchStart;
+          
+          // Track if we meet performance thresholds
+          if (this.metrics.loadTime < 2500) {
+            this.trackEvent('performance_good', { load_time: this.metrics.loadTime });
+          } else {
+            this.trackEvent('performance_slow', { load_time: this.metrics.loadTime });
+          }
         }
       });
-    };
+    }
     
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          checkScroll();
-          ticking = false;
+    setupInteractionTracking() {
+      // Track CTA clicks with timing
+      document.addEventListener('click', (e) => {
+        if (e.target.matches('.sw-cta, .sw-cta *')) {
+          const startTime = performance.now();
+          setTimeout(() => {
+            const interactionTime = performance.now() - startTime;
+            this.trackEvent('cta_interaction_time', { 
+              duration: interactionTime,
+              meets_threshold: interactionTime < SHOCKWAVE_CONFIG.performance.maxInteractionDelay
+            });
+          }, 10);
+        }
+      });
+    }
+    
+    trackEvent(eventName, data = {}) {
+      if (typeof gtag !== 'undefined') {
+        gtag('event', eventName, {
+          event_category: 'Performance',
+          ...data
         });
-        ticking = true;
       }
-    });
+    }
   }
 
-  trackEvent(eventName, data = {}) {
-    // Google Analytics 4
-    if (typeof gtag !== 'undefined') {
-      gtag('event', eventName.toLowerCase().replace(/\s+/g, '_'), {
-        event_category: 'Shockwave_Hero',
-        event_label: data.text || data.type || 'Hero_Interaction',
-        custom_parameter: JSON.stringify(data)
-      });
+  // ===================================================================
+  // INITIALIZATION & DOM READY
+  // ===================================================================
+  
+  class ShockwaveApp {
+    constructor() {
+      this.components = [];
+      this.init();
     }
-
-    // Facebook Pixel
-    if (typeof fbq !== 'undefined') {
-      fbq('trackCustom', eventName, data);
-    }
-
-    // Console log for development
-    console.log(`📊 ${eventName}:`, data);
     
-    // Custom analytics endpoint (if available)
-    if (window.customAnalytics && typeof window.customAnalytics.track === 'function') {
-      window.customAnalytics.track(eventName, {
-        section: 'Hero',
-        timestamp: Date.now(),
-        ...data
-      });
+    init() {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this.initializeComponents());
+      } else {
+        this.initializeComponents();
+      }
     }
-  }
-
-  // Utility Methods
-  getElementPosition(element) {
-    const rect = element.getBoundingClientRect();
-    return {
-      top: rect.top + window.scrollY,
-      left: rect.left + window.scrollX,
-      width: rect.width,
-      height: rect.height,
-      centerX: rect.left + rect.width / 2,
-      centerY: rect.top + rect.height / 2
-    };
-  }
-
-  // Public Methods
-  pauseAnimations() {
-    if (this.flowInterval) {
-      clearInterval(this.flowInterval);
-      this.flowInterval = null;
-    }
-  }
-
-  resumeAnimations() {
-    if (!this.flowInterval && this.isVisible) {
-      this.startFlowAnimation();
-    }
-  }
-
-  resetCounters() {
-    this.counters.forEach(counter => {
-      counter.animated = false;
-      counter.current = 0;
-      counter.element.textContent = '0';
-    });
-  }
-
-  destroy() {
-    this.pauseAnimations();
-    // Remove event listeners if needed
-  }
-}
-
-// CSS for ripple effect
-const rippleCSS = document.createElement('style');
-rippleCSS.textContent = `
-  @keyframes rippleEffect {
-    to {
-      transform: scale(4);
-      opacity: 0;
-    }
-  }
-`;
-document.head.appendChild(rippleCSS);
-
-// Auto-initialize
-document.addEventListener('DOMContentLoaded', () => {
-  window.shockwaveHero = new ShockwaveHero();
-});
-
-// Handle page visibility changes
-document.addEventListener('visibilitychange', () => {
-  if (window.shockwaveHero) {
-    if (document.hidden) {
-      window.shockwaveHero.pauseAnimations();
-    } else {
-      window.shockwaveHero.resumeAnimations();
-    }
-  }
-});
-
-// Performance monitoring
-if ('performance' in window) {
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      const perfData = performance.getEntriesByType('navigation')[0];
-      const paintData = performance.getEntriesByType('paint');
+    
+    initializeComponents() {
+      // Initialize all Shockwave components
+      this.components.push(new ShockwaveROICalculator());
+      this.components.push(new ShockwaveFormHandler());
+      this.components.push(new ShockwavePerformanceMonitor());
       
-      if (perfData && window.shockwaveHero) {
-        window.shockwaveHero.trackEvent('Performance Metrics', {
-          domContentLoaded: Math.round(perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart),
-          loadComplete: Math.round(perfData.loadEventEnd - perfData.loadEventStart),
-          firstPaint: paintData.find(entry => entry.name === 'first-paint')?.startTime,
-          firstContentfulPaint: paintData.find(entry => entry.name === 'first-contentful-paint')?.startTime
+      // Setup global event tracking
+      this.setupGlobalTracking();
+      
+      // Initialize hero view tracking
+      this.trackHeroView();
+    }
+    
+    setupGlobalTracking() {
+      // Track all CTA clicks
+      document.addEventListener('click', (e) => {
+        if (e.target.matches('.sw-cta, .sw-cta *')) {
+          const ctaText = e.target.textContent.trim();
+          this.trackEvent('cta_click', { cta_text: ctaText });
+        }
+      });
+    }
+    
+    trackHeroView() {
+      const hero = document.querySelector('.sw-hero');
+      if (hero) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              this.trackEvent('hero_view');
+              observer.unobserve(hero);
+            }
+          });
+        }, { threshold: 0.5 });
+        
+        observer.observe(hero);
+      }
+    }
+    
+    trackEvent(eventName, data = {}) {
+      if (typeof gtag !== 'undefined') {
+        gtag('event', eventName, {
+          event_category: 'ShockwaveHQ',
+          ...data
         });
       }
-    }, 1000);
-  });
-}
+    }
+  }
 
+  // ===================================================================
+  // AUTO-INITIALIZATION
+  // ===================================================================
+  
+  // Start Shockwave application
+  new ShockwaveApp();
+
+})();
+
+// Export for potential external use
+window.ShockwaveHQ = {
+  version: '1.0.0',
+  config: typeof SHOCKWAVE_CONFIG !== 'undefined' ? SHOCKWAVE_CONFIG : null
+};
