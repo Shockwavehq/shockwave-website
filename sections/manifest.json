@@ -15,3 +15,4 @@
   "motion": { "default": "fadeUp", "observer": { "rootMargin": "0px 0px -10% 0px", "threshold": 0.2, "once": true } },
   "flags": { "respect_reduced_motion": true, "defer_non_critical": true, "no_third_party_in_hero": true }
 }
+
