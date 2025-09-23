@@ -1,12 +1,23 @@
-/* sections/hero.css */
-[data-sw-section="hero"] { position:relative; overflow:hidden; padding:clamp(64px,8vw,120px) 0; }
-[data-sw-section="hero"] .sw-hero__content { position:relative; z-index:2; }
-[data-sw-section="hero"] .sw-hero__title { font-size:clamp(32px,5vw,52px); line-height:1.1; margin:0 0 var(--sw-space-4); font-weight:800; letter-spacing:-.02em; }
-[data-sw-section="hero"] .sw-hero__subtitle { font-size:clamp(18px,2.2vw,22px); color:var(--sw-muted); margin:0 0 var(--sw-space-5); max-width:680px; line-height:1.5; }
-[data-sw-section="hero"] .sw-hero__ctas { display:flex; gap:var(--sw-space-3); flex-wrap:wrap; }
-[data-sw-section="hero"] .sw-trustbar { margin-top:var(--sw-space-6); display:grid; gap:var(--sw-space-3); }
-[data-sw-section="hero"] .sw-trustbar__logos { display:flex; gap:var(--sw-space-3); align-items:center; opacity:.85; }
-[data-sw-section="hero"] .sw-logo { padding:8px 12px; border:1px dashed rgba(255,255,255,.2); border-radius:6px; font-size:12px; color:var(--sw-muted); }
-[data-sw-anim] { opacity:0; transform:translateY(20px); transition:opacity .6s cubic-bezier(.4,0,.2,1), transform .6s cubic-bezier(.4,0,.2,1); }
-[data-sw-anim].is-inview { opacity:1; transform:none; }
-@media (prefers-reduced-motion:reduce){ [data-sw-anim]{ transition:none !important; } }
+#hero{padding:72px 0}
+@media (max-width:768px){#hero{padding:48px 0}}
+#hero .grid{display:grid;grid-template-columns:56% 44%;gap:24px;align-items:center}
+@media (max-width:1024px){#hero .grid{grid-template-columns:1fr}}
+#hero .kicker{color:var(--brand);font-weight:800;margin-bottom:8px}
+#hero h1{font-size:48px;line-height:1.1;margin:0 0 12px}
+@media (max-width:768px){#hero h1{font-size:32px}}
+#hero .subhead{font-size:20px;line-height:1.45;color:var(--muted);margin:0 0 16px}
+@media (max-width:768px){#hero .subhead{font-size:16px}}
+#hero .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 12px}
+#hero .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
+#hero .trust{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:#333;margin-top:12px}
+#hero .trust .logos{display:flex;gap:14px;align-items:center}
+#hero .visual img{width:100%;height:auto;border-radius:16px;display:block;border:1px solid var(--divider)}
+
+/* Rotator */
+#hero .rotator{display:inline-block;white-space:nowrap}
+#hero .rotator .word{display:inline-block;opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s ease}
+#hero .rotator .word.active{opacity:1;transform:translateY(0)}
+
+@media (prefers-reduced-motion: reduce){
+  #hero .rotator .word{transition:none}
+}
