@@ -1,12 +1,13 @@
-/* shockwave-live.js — ShockwaveHQ "alive" counters (no backend) */
+/* shockwave-live.js — ShockwaveHQ "alive" counters (kept; enhanced) */
 (function () {
   'use strict';
 
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
   const STORE = 'sw_live_data_v1';
+  const ENABLED = (document.body.getAttribute('data-live') || 'on') !== 'off' && !/live=off/i.test(location.search);
 
-  // Tunable metrics (keep believable; match on-page copy)
-  const CFG = {
+  // Tunable metrics (keep believable; can override via window.SW_LIVE_CONFIG)
+  const DEFAULT_CFG = {
     roi_avg:           { base: 247, var: 20, min: 200, max: 400, dec: 0, trend:  1 },
     deployments:       { base:   8, var:  3, min:   5, max:  15, dec: 0, trend:  1 },
     revenue:           { base: 2.4, var: 0.2, min: 2.0, max: 3.5, dec: 1, trend:  1 },
@@ -17,15 +18,10 @@
     avg_opportunity:   { base: 127, var: 25, min:  75, max: 200, dec: 0, trend:  1 },
     calculator_users:  { base:  23, var:  8, min:  15, max:  45, dec: 0, trend:  1 }
   };
+  const CFG = Object.assign({}, DEFAULT_CFG, window.SW_LIVE_CONFIG || {});
 
-  const getData = () => {
-    try { return JSON.parse(localStorage.getItem(STORE) || '{}'); }
-    catch { return {}; }
-  };
-  const setData = (obj) => {
-    try { localStorage.setItem(STORE, JSON.stringify(obj)); }
-    catch {}
-  };
+  const getData = () => { try { return JSON.parse(localStorage.getItem(STORE) || '{}'); } catch { return {}; } };
+  const setData = (obj) => { try { localStorage.setItem(STORE, JSON.stringify(obj)); } catch {} };
 
   function genValue(key) {
     const c = CFG[key]; if (!c) return null;
@@ -35,21 +31,43 @@
     let v = last + drift;
     v = Math.max(c.min, Math.min(c.max, v));
     data[key] = v; setData(data);
-    return c.dec ? v.toFixed(c.dec) : Math.round(v);
+    return c.dec ? Number(v.toFixed(c.dec)) : Math.round(v);
+  }
+
+  // Formatting helpers
+  const fmtCurrency = (n, locale) => {
+    try { return new Intl.NumberFormat(locale || undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n); }
+    catch { return '$' + String(Math.round(n)); }
+  };
+  const fmtPercent = (n) => Math.max(0, Math.round(n)) + '%';
+
+  function formatForEl(el, value) {
+    const format = (el.getAttribute('data-format') || 'int').toLowerCase();
+    const prefix = el.getAttribute('data-prefix') || '';
+    const suffix = el.getAttribute('data-suffix') || '';
+    const locale = el.getAttribute('data-locale') || undefined;
+
+    let out = value;
+    if (format === 'currency') out = fmtCurrency(value, locale);
+    else if (format === 'percent') out = fmtPercent(value);
+    else if (format === 'float') out = Number(value).toFixed(Number(el.getAttribute('data-precision') || 1));
+    else out = String(Math.round(value)); // int
+    return prefix + out + suffix;
   }
 
   function animate(el, to, ms = 900) {
-    const from = parseFloat(el.textContent) || 0;
+    const fromText = el.textContent.replace(/[^\d.-]/g,'');
+    const from = parseFloat(fromText) || 0;
     const end = parseFloat(to);
     const start = performance.now();
-    const isDec = String(to).includes('.');
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) { el.textContent = formatForEl(el, end); return; }
     el.classList.add('sw-updating');
-
     function step(t) {
       const p = Math.min((t - start) / ms, 1);
       const e = 1 - Math.pow(1 - p, 3); // easeOutCubic
       const cur = from + (end - from) * e;
-      el.textContent = isDec ? cur.toFixed(1) : Math.round(cur);
+      el.textContent = formatForEl(el, cur);
       if (p < 1) requestAnimationFrame(step);
       else el.classList.remove('sw-updating');
     }
@@ -57,42 +75,63 @@
   }
 
   function updateAll() {
+    if (!ENABLED) return;
 
     $$('[data-sw-metric]').forEach(el => {
       const key = el.getAttribute('data-sw-metric');
       const val = genValue(key);
-      if (val !== null && el.textContent.trim() !== String(val)) animate(el, val);
+      if (val !== null) {
+        const current = el.textContent.trim();
+        const formatted = formatForEl(el, val);
+        if (current !== formatted) animate(el, val);
+      }
     });
   }
 
   function bump(key, delta = 1) {
+    const c = CFG[key]; if (!c) return;
     const data = getData();
-    const cur = Number(data[key] ?? CFG[key]?.base ?? 0);
-    data[key] = cur + delta;
+    const cur = Number(data[key] ?? c.base ?? 0);
+    const next = cur + delta;
+    data[key] = Math.max(c.min, Math.min(c.max, next));
     setData(data);
+    updateAll();
   }
 
+  // Bind light DOM events (works without engine)
   function bindEvents() {
-    // ROI calculator usage bumps
+    // ROI usage (anchor/scroll)
 
-    $$('[data-sw-scroll-to="#sw-roi"], a[href="#sw-roi"]').forEach(el => {
-      el.addEventListener('click', () => { bump('calculator_users', 1); updateAll(); }, { passive: true });
+    $$('[data-sw-scroll-to="#roi-calculator"], a[href="#roi-calculator"]').forEach(el => {
+      el.addEventListener('click', () => { bump('calculator_users', 1); }, { passive: true });
     });
-
-    // Optional: bump avg opportunity on calendar open
+    // Calendar open
 
     $$('[data-sw-open="calendar"]').forEach(el => {
-      el.addEventListener('click', () => { bump('avg_opportunity', Math.round(Math.random() * 3)); updateAll(); }, { passive: true });
+      el.addEventListener('click', () => { bump('avg_opportunity', Math.round(Math.random() * 3)); }, { passive: true });
     });
+
+    // Optional: listen for custom events if modules dispatch them
+    document.addEventListener('sw:roi_submit', () => bump('calculator_users', 1));
+    document.addEventListener('sw:calendar_opened', () => bump('avg_opportunity', Math.round(Math.random() * 3)));
   }
 
-  // Respect visibility (save CPU)
+  // Public API
+  window.SW_LIVE = {
+    bump,
+    updateAll,
+    set: (key, value) => { const data = getData(); data[key] = value; setData(data); updateAll(); },
+    config: CFG
+  };
+
+  // Visibility CPU saver
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) clearInterval(window.__swLiveTimer);
     else { updateAll(); window.__swLiveTimer = setInterval(updateAll, 45000); }
   });
 
   document.addEventListener('DOMContentLoaded', () => {
+    if (!ENABLED) return;
     bindEvents();
     updateAll();
     window.__swLiveTimer = setInterval(updateAll, 45000);
