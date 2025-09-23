@@ -4,8 +4,11 @@
   "cdn_base": "https://cdn.jsdelivr.net/gh/shockwavehq/shockwave-website@main",
   "engine": {
     "css": "/shockwave-live.css",
-    "js": "/shockwave-live.js"
+    "js": "/shockwave-engine.js"
   },
+  "sections": [
+    { "id": "hero", "css": "/sections/hero.css", "js": "/sections/hero.js", "selector": "#hero", "events": ["hero_seen","hero_primary_cta_click","hero_secondary_cta_click"], "defer": false },
+    { "id": "roi-calculator", "css": "/sections/roi.css", "js": "/sections/roi.js", "selector": "#roi-calculator", "events": ["roi_submit","roi_result_view","roi_email_submit","roi_book_demo_click"], "defer": true },
   "brand_tokens": {
     "colors": {
       "primary": "#D12E1F",
