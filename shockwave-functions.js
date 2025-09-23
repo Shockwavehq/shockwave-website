@@ -1,460 +1,443 @@
 /* ===================================================================
-   🤖 SHOCKWAVE AI AUTOMATION HERO EFFECTS
-   Interactive Neural Network + Psychological Typewriter
+   🔥 ENHANCED HERO SECTION INTERACTIVE EFFECTS - FUSION VERSION
    =================================================================== */
 
-class ShockwaveAIHero {
+class ShockwaveNeuralHero {
   constructor() {
-    this.typewriterPhrases = [
-      "Your leads are calling competitors while you sleep...",
-      "Every missed call costs you $2,500 in revenue...",
-      "Prospects hang up after 3 rings - you respond in hours...",
-      "Competitors answer in 60 seconds - you take 2 hours...",
-      "Your best leads are booking with faster agencies...",
-      "Manual follow-up loses 78% of hot prospects...",
-      "After-hours calls = $15K monthly revenue loss...",
-      "Slow response = immediate competitive disadvantage..."
-    ];
-    
-    this.currentPhrase = 0;
-    this.isTyping = false;
-    this.typewriterSpeed = 80;
-    this.eraseSpeed = 40;
-    this.pauseDuration = 2000;
-    
-    this.mouseX = 0;
-    this.mouseY = 0;
-    this.cursorTrails = [];
-    
+    this.animationQueue = [];
+    this.isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.init();
   }
   
   init() {
-    this.createAIElements();
-    this.initTypewriter();
-    this.initInteractiveBackground();
-    this.initAICursor();
-    this.initNeuralNodes();
-    this.initPerformanceMonitoring();
-    this.initAnalytics();
-  }
-  
-  createAIElements() {
-    const hero = document.querySelector('.shockwave-ai-hero');
-    if (!hero) return;
-    
-    // Neural Grid
-    const neuralGrid = document.createElement('div');
-    neuralGrid.className = 'neural-grid';
-    hero.appendChild(neuralGrid);
-    
-    // Data Streams
-    const dataStreams = document.createElement('div');
-    dataStreams.className = 'data-streams';
-    for (let i = 0; i < 6; i++) {
-      const stream = document.createElement('div');
-      stream.className = 'data-stream';
-      dataStreams.appendChild(stream);
+    if (!this.isReduced) {
+      this.initTypewriterEffect();
+      this.initCounterAnimations();
+      this.initParallaxEffects();
+      this.initPerformanceMonitoring();
     }
-    hero.appendChild(dataStreams);
-    
-    // Neural Nodes
-    const neuralNodes = document.createElement('div');
-    neuralNodes.className = 'neural-nodes';
-    hero.appendChild(neuralNodes);
-    
-    // AI Cursor
-    const aiCursor = document.createElement('div');
-    aiCursor.className = 'ai-cursor';
-    document.body.appendChild(aiCursor);
+    this.initAccessibility();
+    this.initScrollIndicator();
   }
   
-  initTypewriter() {
-    const typewriterElement = document.querySelector('.typewriter-text');
-    if (!typewriterElement) return;
-    
-    this.typewriterElement = typewriterElement;
-    this.startTypewriterCycle();
-    
-    // Track typewriter engagement
-    this.trackEvent('typewriter_started', {
-      total_phrases: this.typewriterPhrases.length
-    });
-  }
-  
-  startTypewriterCycle() {
-    if (this.isTyping) return;
-    
-    const phrase = this.typewriterPhrases[this.currentPhrase];
-    this.typePhrase(phrase);
-  }
-  
-  typePhrase(phrase) {
-    this.isTyping = true;
-    let charIndex = 0;
-    
-    const typeChar = () => {
-      if (charIndex < phrase.length) {
-        this.typewriterElement.textContent = phrase.substring(0, charIndex + 1);
-        charIndex++;
-        setTimeout(typeChar, this.typewriterSpeed);
-      } else {
-        // Phrase complete - pause then erase
-        setTimeout(() => this.erasePhrase(phrase), this.pauseDuration);
-      }
+  // Enhanced Typewriter Effect with Multiple Phases
+  initTypewriterEffect() {
+    const typewriterElements = {
+      line1: document.querySelector('.typewriter-line-1'),
+      highlight: document.querySelector('.typewriter-highlight'), 
+      subline: document.querySelector('.typewriter-subline')
     };
     
-    typeChar();
-  }
-  
-  erasePhrase(phrase) {
-    let charIndex = phrase.length;
+    if (!typewriterElements.line1) return;
     
-    const eraseChar = () => {
-      if (charIndex > 0) {
-        this.typewriterElement.textContent = phrase.substring(0, charIndex - 1);
-        charIndex--;
-        setTimeout(eraseChar, this.eraseSpeed);
-      } else {
-        // Phrase erased - move to next
-        this.currentPhrase = (this.currentPhrase + 1) % this.typewriterPhrases.length;
-        this.isTyping = false;
-        
-        // Track phrase completion
-        this.trackEvent('typewriter_phrase_complete', {
-          phrase_index: this.currentPhrase - 1,
-          phrase_text: phrase.substring(0, 50) + '...'
-        });
-        
-        setTimeout(() => this.startTypewriterCycle(), 500);
-      }
-    };
-    
-    eraseChar();
-  }
-  
-  initInteractiveBackground() {
-    const hero = document.querySelector('.shockwave-ai-hero');
-    if (!hero) return;
-    
-    hero.addEventListener('mousemove', (e) => {
-      const rect = hero.getBoundingClientRect();
-      this.mouseX = (e.clientX - rect.left) / rect.width;
-      this.mouseY = (e.clientY - rect.top) / rect.height;
-      
-      // Update CSS custom properties for mouse effects
-      hero.style.setProperty('--mouse-x', this.mouseX);
-      hero.style.setProperty('--mouse-y', this.mouseY);
-      
-      // Dynamic background gradients
-      const xPercent = this.mouseX * 100;
-      const yPercent = this.mouseY * 100;
-      
-      hero.style.background = `
-        radial-gradient(circle at ${xPercent}% ${yPercent}%, rgba(0, 245, 255, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at ${100-xPercent}% ${100-yPercent}%, rgba(139, 92, 246, 0.06) 0%, transparent 40%),
-        linear-gradient(135deg, #000000 0%, #0F0F23 25%, #1A1A2E 50%, #16213E 75%, #0F0F23 100%)
-      `;
-      
-      // Update neural nodes positions
-      this.updateNeuralNodes();
-    });
-    
-    // Reset on mouse leave
-    hero.addEventListener('mouseleave', () => {
-      hero.style.background = '';
-    });
-  }
-  
-  initAICursor() {
-    const cursor = document.querySelector('.ai-cursor');
-    if (!cursor) return;
-    
-    let lastX = 0, lastY = 0;
-    
-    document.addEventListener('mousemove', (e) => {
-      const deltaX = e.clientX - lastX;
-      const deltaY = e.clientY - lastY;
-      const velocity = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-      
-      // Update cursor position
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-      
-      // Scale cursor based on velocity
-      const scale = Math.min(1 + velocity * 0.02, 2);
-      cursor.style.transform = `scale(${scale})`;
-      
-      // Create trailing particles
-      this.createCursorTrail(e.clientX, e.clientY);
-      
-      lastX = e.clientX;
-      lastY = e.clientY;
-    });
-    
-    // Hide cursor when leaving window
-    document.addEventListener('mouseleave', () => {
-      cursor.style.opacity = '0';
-    });
-    
-    document.addEventListener('mouseenter', () => {
-      cursor.style.opacity = '0.8';
-    });
-  }
-  
-  createCursorTrail(x, y) {
-    const trail = document.createElement('div');
-    trail.className = 'ai-cursor-trail';
-    trail.style.left = x + 'px';
-    trail.style.top = y + 'px';
-    document.body.appendChild(trail);
-    
-    // Animate trail
+    // Phase 1: Main competitor line
     setTimeout(() => {
-      trail.style.opacity = '0';
-      trail.style.transform = 'scale(0)';
-      trail.style.transition = 'all 0.5s ease-out';
-    }, 50);
+      this.typewriterAnimation(
+        typewriterElements.line1,
+        'Your competitors respond in hours.',
+        50
+      );
+    }, 500);
     
-    // Remove trail
+    // Phase 2: Shockwave advantage
     setTimeout(() => {
-      if (trail.parentNode) {
-        trail.parentNode.removeChild(trail);
-      }
-    }, 600);
-  }
-  
-  initNeuralNodes() {
-    const container = document.querySelector('.neural-nodes');
-    if (!container) return;
-    
-    // Create interactive neural nodes
-    for (let i = 0; i < 12; i++) {
-      const node = document.createElement('div');
-      node.className = 'neural-node';
-      
-      // Random positioning
-      node.style.left = Math.random() * 100 + '%';
-      node.style.top = Math.random() * 100 + '%';
-      node.style.animationDelay = Math.random() * 2 + 's';
-      
-      container.appendChild(node);
-    }
-  }
-  
-  updateNeuralNodes() {
-    const nodes = document.querySelectorAll('.neural-node');
-    
-    nodes.forEach((node, index) => {
-      // Calculate distance from mouse
-      const rect = node.getBoundingClientRect();
-      const nodeX = (rect.left + rect.width / 2) / window.innerWidth;
-      const nodeY = (rect.top + rect.height / 2) / window.innerHeight;
-      
-      const distanceX = this.mouseX - nodeX;
-      const distanceY = this.mouseY - nodeY;
-      const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-      
-      // Attraction effect
-      if (distance < 0.2) {
-        const attractionX = distanceX * 20;
-        const attractionY = distanceY * 20;
-        
-        node.style.transform = `translate(${attractionX}px, ${attractionY}px) scale(${2 - distance * 5})`;
-        node.style.boxShadow = `0 0 ${30 - distance * 100}px var(--neural-primary)`;
-      } else {
-        node.style.transform = 'translate(0, 0) scale(1)';
-        node.style.boxShadow = '0 0 10px var(--neural-primary)';
-      }
-    });
-  }
-  
-  initPerformanceMonitoring() {
-    // Monitor frame rate
-    let lastTime = performance.now();
-    let frameCount = 0;
-    
-    const checkPerformance = () => {
-      frameCount++;
-      const currentTime = performance.now();
-      
-      if (currentTime - lastTime >= 1000) {
-        const fps = frameCount;
-        frameCount = 0;
-        lastTime = currentTime;
-        
-        // Adjust effects based on performance
-        if (fps < 30) {
-          document.documentElement.classList.add('low-end-device');
-          this.trackEvent('performance_degraded', { fps });
+      this.typewriterAnimation(
+        typewriterElements.highlight,
+        'We respond in 60 seconds.',
+        45,
+        () => {
+          // Add emphasis pulse
+          typewriterElements.highlight.style.animation += ', emphasisPulse 0.6s ease-in-out';
         }
+      );
+    }, 2500);
+    
+    // Phase 3: Revenue impact
+    setTimeout(() => {
+      this.typewriterAnimation(
+        typewriterElements.subline,
+        'Recovering $2.4K-25K+ monthly.',
+        40
+      );
+    }, 3800);
+    
+    // Add emphasis pulse animation
+    this.addEmphasisAnimation();
+  }
+  
+  typewriterAnimation(element, text, speed, callback) {
+    if (!element) return;
+    
+    element.style.opacity = '1';
+    element.textContent = '';
+    
+    let i = 0;
+    const timer = setInterval(() => {
+      element.textContent += text.charAt(i);
+      i++;
+      
+      if (i > text.length) {
+        clearInterval(timer);
+        if (callback) callback();
       }
-      
-      requestAnimationFrame(checkPerformance);
+    }, speed);
+  }
+  
+  addEmphasisAnimation() {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes emphasisPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  // Animated ROI Counters with Easing
+  initCounterAnimations() {
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: '0px 0px -100px 0px'
     };
     
-    requestAnimationFrame(checkPerformance);
-  }
-  
-  initAnalytics() {
-    // Track hero interactions
-    const ctaButton = document.querySelector('.pilot-button');
-    if (ctaButton) {
-      ctaButton.addEventListener('click', () => {
-        this.trackEvent('pilot_cta_click', {
-          button_text: ctaButton.textContent.trim(),
-          current_typewriter_phrase: this.currentPhrase
-        });
-      });
-      
-      ctaButton.addEventListener('mouseenter', () => {
-        this.trackEvent('pilot_cta_hover', {
-          hover_time: performance.now()
-        });
-      });
-    }
-    
-    // Track trust indicator interactions
-    document.querySelectorAll('.trust-indicator').forEach((indicator, index) => {
-      indicator.addEventListener('click', () => {
-        const trustType = indicator.querySelector('.trust-text').textContent;
-        this.trackEvent('trust_indicator_click', {
-          trust_type: trustType,
-          indicator_position: index
-        });
-      });
-    });
-    
-    // Track engagement time
-    let engagementStart = performance.now();
-    window.addEventListener('beforeunload', () => {
-      const engagementTime = performance.now() - engagementStart;
-      this.trackEvent('hero_engagement_time', {
-        time_seconds: Math.round(engagementTime / 1000)
-      });
-    });
-  }
-  
-  trackEvent(eventName, data = {}) {
-    const eventData = {
-      event_category: 'AI Hero Section',
-      event_label: 'Neural Interface',
-      section: 'ai_hero',
-      timestamp: new Date().toISOString(),
-      viewport_width: window.innerWidth,
-      viewport_height: window.innerHeight,
-      ...data
-    };
-    
-    // Google Analytics 4
-    if (typeof gtag !== 'undefined') {
-      gtag('event', eventName, eventData);
-    }
-    
-    // Console log for development
-    if (window.location.hostname === 'localhost') {
-      console.log('🤖 AI Hero Event:', eventName, eventData);
-    }
-  }
-}
-
-/* ===================================================================
-   COUNTER ANIMATIONS FOR REVENUE STATS
-   =================================================================== */
-
-class RevenueCounters {
-  constructor() {
-    this.counters = [
-      { selector: '.stat-number[data-count="21"]', target: 21, suffix: 'x' },
-      { selector: '.stat-number[data-count="60"]', target: 60, suffix: 's' },
-      { selector: '.stat-number[data-count="25000"]', target: 25000, prefix: '$', suffix: '+' }
-    ];
-    
-    this.init();
-  }
-  
-  init() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          this.animateCounters();
+          this.animateROICounters();
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.5 });
+    }, observerOptions);
     
-    const revenueSection = document.querySelector('.revenue-impact');
-    if (revenueSection) {
-      observer.observe(revenueSection);
+    const roiPanel = document.querySelector('.shockwave-glass-roi.hero-proof');
+    if (roiPanel) {
+      observer.observe(roiPanel);
     }
   }
   
-  animateCounters() {
-    this.counters.forEach(counter => {
-      const element = document.querySelector(counter.selector);
-      if (!element) return;
-      
-      this.animateCounter(element, counter);
-    });
+  animateROICounters() {
+    const counters = [
+      { 
+        element: '.roi-stat', 
+        targets: ['21x', '$25K+'], 
+        durations: [1500, 2000] 
+      }
+    ];
+    
+    const roiStats = document.querySelectorAll('.roi-stat');
+    
+    if (roiStats[0]) {
+      this.animateCounter(roiStats[0], 21, 1500, 'x');
+    }
+    
+    if (roiStats[1]) {
+      this.animateCurrency(roiStats[1], 25000, 2000, '$', 'K+');
+    }
   }
   
-  animateCounter(element, config) {
-    const { target, prefix = '', suffix = '' } = config;
-    const duration = 2000;
-    const startTime = performance.now();
+  animateCounter(element, target, duration, suffix = '') {
+    let current = 0;
+    const increment = target / (duration / 16);
     
-    const updateCounter = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Easing function
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-      const current = Math.round(target * easeOutQuart);
-      
-      element.textContent = prefix + this.formatNumber(current) + suffix;
-      
-      if (progress < 1) {
+    const updateCounter = () => {
+      current += increment;
+      if (current >= target) {
+        element.textContent = target + suffix;
+      } else {
+        element.textContent = Math.floor(current) + suffix;
         requestAnimationFrame(updateCounter);
       }
     };
     
-    requestAnimationFrame(updateCounter);
+    updateCounter();
   }
   
-  formatNumber(num) {
-    if (num >= 1000) {
-      return (num / 1000).toFixed(0) + 'K';
+  animateCurrency(element, target, duration, prefix = '$', suffix = '') {
+    let current = 0;
+    const increment = target / (duration / 16);
+    
+    const updateCounter = () => {
+      current += increment;
+      if (current >= target) {
+        element.textContent = prefix + target / 1000 + suffix;
+      } else {
+        element.textContent = prefix + Math.floor(current / 1000) + suffix;
+        requestAnimationFrame(updateCounter);
+      }
+    };
+    
+    updateCounter();
+  }
+  
+  // Subtle Parallax Effects for Neural Background
+  initParallaxEffects() {
+    let ticking = false;
+    
+    const updateParallax = () => {
+      const scrolled = window.pageYOffset;
+      const hero = document.querySelector('.shockwave-neural-hero');
+      
+      if (hero) {
+        const yPos = -(scrolled * 0.3);
+        hero.style.transform = `translateY(${yPos}px)`;
+      }
+      
+      ticking = false;
+    };
+    
+    const requestTick = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    };
+    
+    window.addEventListener('scroll', requestTick);
+  }
+  
+  // Performance Monitoring for Hero Section
+  initPerformanceMonitoring() {
+    const hero = document.querySelector('.shockwave-neural-hero');
+    if (!hero) return;
+    
+    // Monitor animation performance
+    let animationFrames = 0;
+    let lastTime = performance.now();
+    
+    const monitorFPS = () => {
+      animationFrames++;
+      const currentTime = performance.now();
+      
+      if (currentTime >= lastTime + 1000) {
+        const fps = Math.round((animationFrames * 1000) / (currentTime - lastTime));
+        
+        // If FPS drops below 30, reduce animations
+        if (fps < 30) {
+          this.optimizeAnimations();
+        }
+        
+        animationFrames = 0;
+        lastTime = currentTime;
+      }
+      
+      requestAnimationFrame(monitorFPS);
+    };
+    
+    monitorFPS();
+  }
+  
+  optimizeAnimations() {
+    const hero = document.querySelector('.shockwave-neural-hero');
+    if (hero) {
+      hero.style.animation = 'none';
+      hero.classList.add('performance-optimized');
     }
-    return num.toString();
+  }
+  
+  // Accessibility Enhancements
+  initAccessibility() {
+    const ctaButton = document.querySelector('.shockwave-glass-button.primary-cta');
+    
+    if (ctaButton) {
+      // Enhanced keyboard navigation
+      ctaButton.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          ctaButton.click();
+        }
+      });
+      
+      // Screen reader announcements
+      ctaButton.setAttribute('aria-label', 'Get 48-Hour AI Pilot with no risk. Deploy in 48 hours and measure results immediately.');
+      
+      // Focus management
+      ctaButton.addEventListener('focus', () => {
+        ctaButton.style.outline = '3px solid rgba(240, 62, 62, 0.6)';
+        ctaButton.style.outlineOffset = '2px';
+      });
+      
+      ctaButton.addEventListener('blur', () => {
+        ctaButton.style.outline = 'none';
+      });
+    }
+    
+    // Add skip link for keyboard users
+    this.addSkipLink();
+  }
+  
+  addSkipLink() {
+    const skipLink = document.createElement('a');
+    skipLink.href = '#main-content';
+    skipLink.textContent = 'Skip to main content';
+    skipLink.className = 'skip-link';
+    skipLink.style.cssText = `
+      position: absolute;
+      top: -40px;
+      left: 6px;
+      background: var(--sw-primary);
+      color: white;
+      padding: 8px;
+      text-decoration: none;
+      border-radius: 4px;
+      z-index: 1000;
+      transition: top 0.3s;
+    `;
+    
+    skipLink.addEventListener('focus', () => {
+      skipLink.style.top = '6px';
+    });
+    
+    skipLink.addEventListener('blur', () => {
+      skipLink.style.top = '-40px';
+    });
+    
+    document.body.insertBefore(skipLink, document.body.firstChild);
+  }
+  
+  // Enhanced Scroll Indicator
+  initScrollIndicator() {
+    const scrollIndicator = document.createElement('div');
+    scrollIndicator.className = 'sw-neural-scroll-indicator';
+    scrollIndicator.innerHTML = `
+      <div class="sw-scroll-text">Discover Revenue Recovery Solutions</div>
+      <div class="sw-scroll-arrow">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12 16L6 10H18L12 16Z" fill="currentColor"/>
+        </svg>
+      </div>
+    `;
+    
+    const heroSection = document.querySelector('.shockwave-neural-hero');
+    if (heroSection) {
+      heroSection.appendChild(scrollIndicator);
+    }
+    
+    // Add enhanced styles
+    const styles = `
+      .sw-neural-scroll-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        animation: neuralScrollBounce 2.5s ease-in-out infinite;
+        z-index: 15;
+        transition: all 0.3s ease;
+        padding: 1rem;
+        border-radius: 12px;
+        backdrop-filter: blur(8px);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .sw-scroll-text {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-family: 'Inter', sans-serif;
+      }
+      
+      .sw-scroll-arrow {
+        font-size: 1.2rem;
+        animation: arrowBounce 1.5s ease-in-out infinite;
+      }
+      
+      .sw-scroll-arrow svg {
+        width: 20px;
+        height: 20px;
+        color: var(--sw-primary);
+      }
+      
+      @keyframes neuralScrollBounce {
+        0%, 100% { 
+          transform: translateX(-50%) translateY(0);
+          opacity: 0.7;
+        }
+        50% { 
+          transform: translateX(-50%) translateY(-8px);
+          opacity: 1;
+        }
+      }
+      
+      @keyframes arrowBounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(4px); }
+      }
+      
+      .sw-neural-scroll-indicator:hover {
+        color: var(--sw-primary);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(209, 46, 31, 0.3);
+        transform: translateX(-50%) translateY(-2px);
+      }
+      
+      @media (max-width: 768px) {
+        .sw-neural-scroll-indicator {
+          bottom: 1rem;
+          padding: 0.8rem;
+        }
+        
+        .sw-scroll-text {
+          font-size: 0.8rem;
+        }
+      }
+    `;
+    
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = styles;
+    document.head.appendChild(styleSheet);
+    
+    // Enhanced smooth scroll
+    scrollIndicator.addEventListener('click', () => {
+      const nextSection = heroSection.nextElementSibling;
+      if (nextSection) {
+        nextSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+        
+        // Track interaction
+        this.trackEvent('scroll_indicator_click');
+      }
+    });
+    
+    // Hide on scroll
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const heroHeight = heroSection.offsetHeight;
+      
+      if (scrolled > heroHeight * 0.3) {
+        scrollIndicator.style.opacity = '0';
+        scrollIndicator.style.transform = 'translateX(-50%) translateY(20px)';
+      } else {
+        scrollIndicator.style.opacity = '1';
+        scrollIndicator.style.transform = 'translateX(-50%) translateY(0)';
+      }
+    });
+  }
+  
+  // Analytics Integration
+  trackEvent(eventName, parameters = {}) {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', eventName, {
+        event_category: 'Hero Section',
+        event_label: 'Neural Hero Interaction',
+        ...parameters
+      });
+    }
+    
+    // Also track to console for debugging
+    console.log('ShockwaveHQ Event:', eventName, parameters);
   }
 }
 
-/* ===================================================================
-   INITIALIZATION
-   =================================================================== */
-
+// Auto-initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  // Check if we're on a mobile device
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  
-  if (!isMobile) {
-    new ShockwaveAIHero();
-  } else {
-    // Simplified version for mobile
-    document.documentElement.classList.add('low-end-device');
-    
-    // Initialize typewriter only
-    const typewriter = new ShockwaveAIHero();
-    typewriter.initTypewriter();
-  }
-  
-  new RevenueCounters();
-  
-  // Track hero load
-  if (typeof gtag !== 'undefined') {
-    gtag('event', 'ai_hero_loaded', {
-      event_category: 'Hero Section',
-      load_time: performance.now()
-    });
-  }
+  new ShockwaveNeuralHero();
 });
+
+// Export for external access
+window.ShockwaveNeuralHero = ShockwaveNeuralHero;
