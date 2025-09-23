@@ -1,23 +1,28 @@
-#hero{padding:72px 0}
-@media (max-width:768px){#hero{padding:48px 0}}
-#hero .grid{display:grid;grid-template-columns:56% 44%;gap:24px;align-items:center}
-@media (max-width:1024px){#hero .grid{grid-template-columns:1fr}}
-#hero .kicker{color:var(--brand);font-weight:800;margin-bottom:8px}
-#hero h1{font-size:48px;line-height:1.1;margin:0 0 12px}
-@media (max-width:768px){#hero h1{font-size:32px}}
-#hero .subhead{font-size:20px;line-height:1.45;color:var(--muted);margin:0 0 16px}
-@media (max-width:768px){#hero .subhead{font-size:16px}}
-#hero .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 12px}
-#hero .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
-#hero .trust{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:#333;margin-top:12px}
-#hero .trust .logos{display:flex;gap:14px;align-items:center}
-#hero .visual img{width:100%;height:auto;border-radius:16px;display:block;border:1px solid var(--divider)}
+/* Section: Hero */
+#hero { padding: 72px 0; }
+@media (max-width: 768px){ #hero { padding: 48px 0; } }
 
-/* Rotator */
-#hero .rotator{display:inline-block;white-space:nowrap}
-#hero .rotator .word{display:inline-block;opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s ease}
-#hero .rotator .word.active{opacity:1;transform:translateY(0)}
-
-@media (prefers-reduced-motion: reduce){
-  #hero .rotator .word{transition:none}
+#hero .grid {
+  display: grid;
+  grid-template-columns: 56% 44%;
+  gap: 24px;
+  align-items: center;
 }
+@media (max-width: 1024px){ #hero .grid { grid-template-columns: 1fr; } }
+
+#hero .kicker { color: var(--brand); font-weight: 800; margin: 0 0 8px; }
+#hero .title { font-size: 48px; line-height: 1.1; margin: 0 0 12px; }
+@media (max-width: 768px){ #hero .title { font-size: 32px; } }
+
+#hero .subhead { font-size: 20px; line-height: 1.45; color: var(--muted); margin: 0 0 16px; max-width: 64ch; }
+@media (max-width: 768px){ #hero .subhead { font-size: 16px; } }
+
+#hero .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0 12px; }
+#hero .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 16px; }
+#hero .trust { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; color: #333; }
+#hero .trust .line { font-size: 14px; color: var(--muted); }
+#hero .trust .logos { display: flex; gap: 14px; align-items: center; }
+#hero .visual .image { width: 100%; height: auto; display: block; border-radius: 16px; border: 1px solid var(--divider); }
+
+/* Motion uses global .fade-up in shockwave-live.css */
+
