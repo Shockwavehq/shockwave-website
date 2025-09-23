@@ -1,0 +1,6 @@
+/* sections/roi.css */
+[data-sw-section="roi"] { padding:clamp(40px,6vw,80px) 0; background:rgba(255,255,255,.03); border-top:1px solid rgba(255,255,255,.08); }
+[data-sw-section="roi"] .sw-roi__wrap { display:grid; gap:var(--sw-space-4); grid-template-columns:1fr; max-width:840px; margin:0 auto; }
+[data-sw-section="roi"] .sw-field { display:flex; flex-direction:column; gap:8px; }
+[data-sw-section="roi"] .sw-input { background:#0e1230; border:1px solid rgba(255,255,255,.1); color:var(--sw-text); border-radius:10px; padding:12px; }
+[data-sw-section="roi"] .sw-roi__result { padding:16px; border:1px solid rgba(255,255,255,.1); border-radius:10px; background:rgba(0,212,170,.06); }
