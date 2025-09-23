@@ -1,292 +1,348 @@
 /* ===================================================================
-   🔥 ENHANCED HERO SECTION EFFECTS - FUSION VERSION
+   🤖 SHOCKWAVE AI AUTOMATION HERO EFFECTS
+   Interactive Neural Network + Psychological Typewriter
    =================================================================== */
 
-class ShockwaveNeuralHero {
+class ShockwaveAIHero {
   constructor() {
-    this.animationSequence = [];
-    this.isAnimating = false;
-    this.observerOptions = {
-      threshold: 0.3,
-      rootMargin: '0px 0px -100px 0px'
-    };
+    this.typewriterPhrases = [
+      "Your leads are calling competitors while you sleep...",
+      "Every missed call costs you $2,500 in revenue...",
+      "Prospects hang up after 3 rings - you respond in hours...",
+      "Competitors answer in 60 seconds - you take 2 hours...",
+      "Your best leads are booking with faster agencies...",
+      "Manual follow-up loses 78% of hot prospects...",
+      "After-hours calls = $15K monthly revenue loss...",
+      "Slow response = immediate competitive disadvantage..."
+    ];
+    
+    this.currentPhrase = 0;
+    this.isTyping = false;
+    this.typewriterSpeed = 80;
+    this.eraseSpeed = 40;
+    this.pauseDuration = 2000;
+    
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.cursorTrails = [];
     
     this.init();
   }
   
   init() {
-    this.setupIntersectionObserver();
-    this.initTypewriterSequence();
-    this.initParticleSystem();
-    this.initCTATracking();
-    this.initPerformanceOptimizations();
+    this.createAIElements();
+    this.initTypewriter();
+    this.initInteractiveBackground();
+    this.initAICursor();
+    this.initNeuralNodes();
+    this.initPerformanceMonitoring();
+    this.initAnalytics();
   }
   
-  setupIntersectionObserver() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !this.isAnimating) {
-          this.startHeroSequence();
-          observer.unobserve(entry.target);
-        }
-      });
-    }, this.observerOptions);
+  createAIElements() {
+    const hero = document.querySelector('.shockwave-ai-hero');
+    if (!hero) return;
     
-    const heroSection = document.querySelector('.shockwave-neural-hero');
-    if (heroSection) {
-      observer.observe(heroSection);
+    // Neural Grid
+    const neuralGrid = document.createElement('div');
+    neuralGrid.className = 'neural-grid';
+    hero.appendChild(neuralGrid);
+    
+    // Data Streams
+    const dataStreams = document.createElement('div');
+    dataStreams.className = 'data-streams';
+    for (let i = 0; i < 6; i++) {
+      const stream = document.createElement('div');
+      stream.className = 'data-stream';
+      dataStreams.appendChild(stream);
     }
+    hero.appendChild(dataStreams);
+    
+    // Neural Nodes
+    const neuralNodes = document.createElement('div');
+    neuralNodes.className = 'neural-nodes';
+    hero.appendChild(neuralNodes);
+    
+    // AI Cursor
+    const aiCursor = document.createElement('div');
+    aiCursor.className = 'ai-cursor';
+    document.body.appendChild(aiCursor);
   }
   
-  startHeroSequence() {
-    this.isAnimating = true;
+  initTypewriter() {
+    const typewriterElement = document.querySelector('.typewriter-text');
+    if (!typewriterElement) return;
     
-    // Track hero impression
-    this.trackHeroEvent('hero_impression', {
-      sequence_started: true,
-      viewport_time: performance.now()
-    });
+    this.typewriterElement = typewriterElement;
+    this.startTypewriterCycle();
     
-    // Initialize counter animations when ROI panel appears
-    setTimeout(() => {
-      this.initCounterAnimations();
-    }, 5000);
-  }
-  
-  initTypewriterSequence() {
-    const line1 = document.querySelector('.typewriter-line-1');
-    const highlight = document.querySelector('.typewriter-highlight');
-    const subline = document.querySelector('.typewriter-subline');
-    
-    if (!line1 || !highlight || !subline) return;
-    
-    // Enhanced typewriter with sound effect simulation
-    const typewriterSteps = [
-      {
-        element: line1,
-        text: 'Your competitors respond in hours.',
-        delay: 500,
-        duration: 2000
-      },
-      {
-        element: highlight,
-        text: 'We respond in 60 seconds.',
-        delay: 2500,
-        duration: 1000
-      },
-      {
-        element: subline,
-        text: 'Recovering $2.4K-25K+ monthly.',
-        delay: 4000,
-        duration: 800
-      }
-    ];
-    
-    typewriterSteps.forEach(step => {
-      setTimeout(() => {
-        this.typewriterEffect(step.element, step.text, step.duration);
-      }, step.delay);
+    // Track typewriter engagement
+    this.trackEvent('typewriter_started', {
+      total_phrases: this.typewriterPhrases.length
     });
   }
   
-  typewriterEffect(element, text, duration) {
-    if (!element) return;
+  startTypewriterCycle() {
+    if (this.isTyping) return;
     
-    element.style.opacity = '1';
-    element.style.transform = 'translateY(0)';
-    
-    // Track typewriter completion
-    setTimeout(() => {
-      this.trackHeroEvent('typewriter_complete', {
-        text_revealed: text,
-        element_class: element.className
-      });
-    }, duration);
+    const phrase = this.typewriterPhrases[this.currentPhrase];
+    this.typePhrase(phrase);
   }
   
-  initCounterAnimations() {
-    const counters = [
-      {
-        selector: '.roi-stat:first-child',
-        start: 1,
-        end: 21,
-        suffix: 'x',
-        duration: 1500
-      },
-      {
-        selector: '.roi-stat:last-child', 
-        start: 1000,
-        end: 25000,
-        prefix: '$',
-        suffix: 'K+',
-        duration: 2000
-      }
-    ];
+  typePhrase(phrase) {
+    this.isTyping = true;
+    let charIndex = 0;
     
-    counters.forEach(counter => {
-      const element = document.querySelector(counter.selector);
-      if (element) {
-        this.animateCounter(element, counter);
-      }
-    });
-  }
-  
-  animateCounter(element, config) {
-    const { start, end, duration, prefix = '', suffix = '' } = config;
-    const startTime = performance.now();
-    const range = end - start;
-    
-    const updateCounter = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Easing function for smooth animation
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-      const current = Math.round(start + (range * easeOutQuart));
-      
-      element.textContent = prefix + this.formatNumber(current) + suffix;
-      
-      if (progress < 1) {
-        requestAnimationFrame(updateCounter);
+    const typeChar = () => {
+      if (charIndex < phrase.length) {
+        this.typewriterElement.textContent = phrase.substring(0, charIndex + 1);
+        charIndex++;
+        setTimeout(typeChar, this.typewriterSpeed);
       } else {
-        // Track counter completion
-        this.trackHeroEvent('counter_complete', {
-          final_value: current,
-          element_text: element.textContent
-        });
+        // Phrase complete - pause then erase
+        setTimeout(() => this.erasePhrase(phrase), this.pauseDuration);
       }
     };
     
-    requestAnimationFrame(updateCounter);
+    typeChar();
   }
   
-  formatNumber(num) {
-    if (num >= 1000) {
-      return (num / 1000).toFixed(num >= 10000 ? 0 : 1);
-    }
-    return num.toString();
-  }
-  
-  initParticleSystem() {
-    // Enhanced particle system with mouse interaction
-    const hero = document.querySelector('.shockwave-neural-hero');
-    if (!hero) return;
+  erasePhrase(phrase) {
+    let charIndex = phrase.length;
     
-    let mouseX = 0;
-    let mouseY = 0;
+    const eraseChar = () => {
+      if (charIndex > 0) {
+        this.typewriterElement.textContent = phrase.substring(0, charIndex - 1);
+        charIndex--;
+        setTimeout(eraseChar, this.eraseSpeed);
+      } else {
+        // Phrase erased - move to next
+        this.currentPhrase = (this.currentPhrase + 1) % this.typewriterPhrases.length;
+        this.isTyping = false;
+        
+        // Track phrase completion
+        this.trackEvent('typewriter_phrase_complete', {
+          phrase_index: this.currentPhrase - 1,
+          phrase_text: phrase.substring(0, 50) + '...'
+        });
+        
+        setTimeout(() => this.startTypewriterCycle(), 500);
+      }
+    };
+    
+    eraseChar();
+  }
+  
+  initInteractiveBackground() {
+    const hero = document.querySelector('.shockwave-ai-hero');
+    if (!hero) return;
     
     hero.addEventListener('mousemove', (e) => {
       const rect = hero.getBoundingClientRect();
-      mouseX = (e.clientX - rect.left) / rect.width;
-      mouseY = (e.clientY - rect.top) / rect.height;
+      this.mouseX = (e.clientX - rect.left) / rect.width;
+      this.mouseY = (e.clientY - rect.top) / rect.height;
       
-      // Update CSS custom properties for mouse-responsive effects
-      hero.style.setProperty('--mouse-x', mouseX);
-      hero.style.setProperty('--mouse-y', mouseY);
+      // Update CSS custom properties for mouse effects
+      hero.style.setProperty('--mouse-x', this.mouseX);
+      hero.style.setProperty('--mouse-y', this.mouseY);
+      
+      // Dynamic background gradients
+      const xPercent = this.mouseX * 100;
+      const yPercent = this.mouseY * 100;
+      
+      hero.style.background = `
+        radial-gradient(circle at ${xPercent}% ${yPercent}%, rgba(0, 245, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at ${100-xPercent}% ${100-yPercent}%, rgba(139, 92, 246, 0.06) 0%, transparent 40%),
+        linear-gradient(135deg, #000000 0%, #0F0F23 25%, #1A1A2E 50%, #16213E 75%, #0F0F23 100%)
+      `;
+      
+      // Update neural nodes positions
+      this.updateNeuralNodes();
     });
     
-    // Track mouse interaction
-    let interactionTracked = false;
-    hero.addEventListener('mousemove', () => {
-      if (!interactionTracked) {
-        this.trackHeroEvent('mouse_interaction', {
-          interaction_type: 'mousemove',
-          section: 'hero'
-        });
-        interactionTracked = true;
+    // Reset on mouse leave
+    hero.addEventListener('mouseleave', () => {
+      hero.style.background = '';
+    });
+  }
+  
+  initAICursor() {
+    const cursor = document.querySelector('.ai-cursor');
+    if (!cursor) return;
+    
+    let lastX = 0, lastY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      const deltaX = e.clientX - lastX;
+      const deltaY = e.clientY - lastY;
+      const velocity = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      
+      // Update cursor position
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      
+      // Scale cursor based on velocity
+      const scale = Math.min(1 + velocity * 0.02, 2);
+      cursor.style.transform = `scale(${scale})`;
+      
+      // Create trailing particles
+      this.createCursorTrail(e.clientX, e.clientY);
+      
+      lastX = e.clientX;
+      lastY = e.clientY;
+    });
+    
+    // Hide cursor when leaving window
+    document.addEventListener('mouseleave', () => {
+      cursor.style.opacity = '0';
+    });
+    
+    document.addEventListener('mouseenter', () => {
+      cursor.style.opacity = '0.8';
+    });
+  }
+  
+  createCursorTrail(x, y) {
+    const trail = document.createElement('div');
+    trail.className = 'ai-cursor-trail';
+    trail.style.left = x + 'px';
+    trail.style.top = y + 'px';
+    document.body.appendChild(trail);
+    
+    // Animate trail
+    setTimeout(() => {
+      trail.style.opacity = '0';
+      trail.style.transform = 'scale(0)';
+      trail.style.transition = 'all 0.5s ease-out';
+    }, 50);
+    
+    // Remove trail
+    setTimeout(() => {
+      if (trail.parentNode) {
+        trail.parentNode.removeChild(trail);
+      }
+    }, 600);
+  }
+  
+  initNeuralNodes() {
+    const container = document.querySelector('.neural-nodes');
+    if (!container) return;
+    
+    // Create interactive neural nodes
+    for (let i = 0; i < 12; i++) {
+      const node = document.createElement('div');
+      node.className = 'neural-node';
+      
+      // Random positioning
+      node.style.left = Math.random() * 100 + '%';
+      node.style.top = Math.random() * 100 + '%';
+      node.style.animationDelay = Math.random() * 2 + 's';
+      
+      container.appendChild(node);
+    }
+  }
+  
+  updateNeuralNodes() {
+    const nodes = document.querySelectorAll('.neural-node');
+    
+    nodes.forEach((node, index) => {
+      // Calculate distance from mouse
+      const rect = node.getBoundingClientRect();
+      const nodeX = (rect.left + rect.width / 2) / window.innerWidth;
+      const nodeY = (rect.top + rect.height / 2) / window.innerHeight;
+      
+      const distanceX = this.mouseX - nodeX;
+      const distanceY = this.mouseY - nodeY;
+      const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+      
+      // Attraction effect
+      if (distance < 0.2) {
+        const attractionX = distanceX * 20;
+        const attractionY = distanceY * 20;
+        
+        node.style.transform = `translate(${attractionX}px, ${attractionY}px) scale(${2 - distance * 5})`;
+        node.style.boxShadow = `0 0 ${30 - distance * 100}px var(--neural-primary)`;
+      } else {
+        node.style.transform = 'translate(0, 0) scale(1)';
+        node.style.boxShadow = '0 0 10px var(--neural-primary)';
       }
     });
   }
   
-  initCTATracking() {
-    const primaryCTA = document.querySelector('.shockwave-glass-button.primary-cta');
-    const trustBadges = document.querySelectorAll('.shockwave-glass-trust.trust-badge');
+  initPerformanceMonitoring() {
+    // Monitor frame rate
+    let lastTime = performance.now();
+    let frameCount = 0;
     
-    if (primaryCTA) {
-      primaryCTA.addEventListener('click', (e) => {
-        this.trackHeroEvent('cta_click', {
-          cta_text: primaryCTA.textContent.trim(),
-          cta_type: 'primary',
-          position: 'hero'
+    const checkPerformance = () => {
+      frameCount++;
+      const currentTime = performance.now();
+      
+      if (currentTime - lastTime >= 1000) {
+        const fps = frameCount;
+        frameCount = 0;
+        lastTime = currentTime;
+        
+        // Adjust effects based on performance
+        if (fps < 30) {
+          document.documentElement.classList.add('low-end-device');
+          this.trackEvent('performance_degraded', { fps });
+        }
+      }
+      
+      requestAnimationFrame(checkPerformance);
+    };
+    
+    requestAnimationFrame(checkPerformance);
+  }
+  
+  initAnalytics() {
+    // Track hero interactions
+    const ctaButton = document.querySelector('.pilot-button');
+    if (ctaButton) {
+      ctaButton.addEventListener('click', () => {
+        this.trackEvent('pilot_cta_click', {
+          button_text: ctaButton.textContent.trim(),
+          current_typewriter_phrase: this.currentPhrase
         });
       });
       
-      // Track CTA hover
-      primaryCTA.addEventListener('mouseenter', () => {
-        this.trackHeroEvent('cta_hover', {
-          cta_type: 'primary',
+      ctaButton.addEventListener('mouseenter', () => {
+        this.trackEvent('pilot_cta_hover', {
           hover_time: performance.now()
         });
       });
     }
     
-    // Track trust badge interactions
-    trustBadges.forEach(badge => {
-      badge.addEventListener('click', () => {
-        const trustType = badge.querySelector('.trust-text').textContent;
-        this.trackHeroEvent('trust_badge_click', {
+    // Track trust indicator interactions
+    document.querySelectorAll('.trust-indicator').forEach((indicator, index) => {
+      indicator.addEventListener('click', () => {
+        const trustType = indicator.querySelector('.trust-text').textContent;
+        this.trackEvent('trust_indicator_click', {
           trust_type: trustType,
-          badge_position: Array.from(trustBadges).indexOf(badge)
+          indicator_position: index
         });
+      });
+    });
+    
+    // Track engagement time
+    let engagementStart = performance.now();
+    window.addEventListener('beforeunload', () => {
+      const engagementTime = performance.now() - engagementStart;
+      this.trackEvent('hero_engagement_time', {
+        time_seconds: Math.round(engagementTime / 1000)
       });
     });
   }
   
-  initPerformanceOptimizations() {
-    // Optimize animations based on device capabilities
-    const isLowEndDevice = this.detectLowEndDevice();
-    
-    if (isLowEndDevice) {
-      document.documentElement.classList.add('low-end-device');
-      
-      // Reduce animation complexity
-      const hero = document.querySelector('.shockwave-neural-hero');
-      if (hero) {
-        hero.style.animationDuration = '20s';
-      }
-    }
-    
-    // Pause animations when not visible
-    this.setupVisibilityHandler();
-  }
-  
-  detectLowEndDevice() {
-    // Simple heuristics for low-end device detection
-    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    const slowConnection = connection && (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g');
-    const lowMemory = navigator.deviceMemory && navigator.deviceMemory < 4;
-    const lowCores = navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4;
-    
-    return slowConnection || lowMemory || lowCores;
-  }
-  
-  setupVisibilityHandler() {
-    let animationsPaused = false;
-    
-    document.addEventListener('visibilitychange', () => {
-      const hero = document.querySelector('.shockwave-neural-hero');
-      if (!hero) return;
-      
-      if (document.hidden && !animationsPaused) {
-        hero.style.animationPlayState = 'paused';
-        animationsPaused = true;
-      } else if (!document.hidden && animationsPaused) {
-        hero.style.animationPlayState = 'running';
-        animationsPaused = false;
-      }
-    });
-  }
-  
-  trackHeroEvent(eventName, data = {}) {
-    // Enhanced analytics tracking
+  trackEvent(eventName, data = {}) {
     const eventData = {
-      event_category: 'Hero Section',
-      event_label: 'Neural Hero Fusion',
-      section: 'hero',
+      event_category: 'AI Hero Section',
+      event_label: 'Neural Interface',
+      section: 'ai_hero',
       timestamp: new Date().toISOString(),
       viewport_width: window.innerWidth,
       viewport_height: window.innerHeight,
-      user_agent: navigator.userAgent,
       ...data
     };
     
@@ -295,92 +351,81 @@ class ShockwaveNeuralHero {
       gtag('event', eventName, eventData);
     }
     
-    // Custom tracking endpoint (if available)
-    if (window.ShockwaveAnalytics && typeof window.ShockwaveAnalytics.track === 'function') {
-      window.ShockwaveAnalytics.track(eventName, eventData);
-    }
-    
     // Console log for development
-    if (window.location.hostname === 'localhost' || window.location.hostname.includes('test')) {
-      console.log('🔥 Shockwave Hero Event:', eventName, eventData);
+    if (window.location.hostname === 'localhost') {
+      console.log('🤖 AI Hero Event:', eventName, eventData);
     }
   }
 }
 
 /* ===================================================================
-   GLASSMORPHISM INTERACTIVE EFFECTS
+   COUNTER ANIMATIONS FOR REVENUE STATS
    =================================================================== */
 
-class GlassmorphismEffects {
+class RevenueCounters {
   constructor() {
+    this.counters = [
+      { selector: '.stat-number[data-count="21"]', target: 21, suffix: 'x' },
+      { selector: '.stat-number[data-count="60"]', target: 60, suffix: 's' },
+      { selector: '.stat-number[data-count="25000"]', target: 25000, prefix: '$', suffix: '+' }
+    ];
+    
     this.init();
   }
   
   init() {
-    this.enhanceGlassElements();
-    this.addInteractiveGlow();
-    this.setupHoverEffects();
-  }
-  
-  enhanceGlassElements() {
-    const glassElements = document.querySelectorAll([
-      '.hero-message-glass',
-      '.shockwave-glass-roi',
-      '.shockwave-glass-button',
-      '.shockwave-glass-trust'
-    ].join(', '));
-    
-    glassElements.forEach(element => {
-      this.addGlassEnhancements(element);
-    });
-  }
-  
-  addGlassEnhancements(element) {
-    // Add subtle mouse tracking for enhanced depth
-    element.addEventListener('mousemove', (e) => {
-      const rect = element.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      
-      // Create subtle tilt effect
-      const tiltX = (y - 0.5) * 10;
-      const tiltY = (x - 0.5) * -10;
-      
-      element.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(0)`;
-    });
-    
-    element.addEventListener('mouseleave', () => {
-      element.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)';
-    });
-  }
-  
-  addInteractiveGlow() {
-    const hero = document.querySelector('.shockwave-neural-hero');
-    if (!hero) return;
-    
-    hero.addEventListener('mousemove', (e) => {
-      const x = (e.clientX / window.innerWidth) * 100;
-      const y = (e.clientY / window.innerHeight) * 100;
-      
-      hero.style.background = `
-        radial-gradient(circle at ${x}% ${y}%, rgba(209, 46, 31, 0.1) 0%, transparent 50%),
-        var(--ai-gradient)
-      `;
-    });
-  }
-  
-  setupHoverEffects() {
-    // Enhanced CTA button effects
-    const ctaButton = document.querySelector('.shockwave-glass-button.primary-cta');
-    if (ctaButton) {
-      ctaButton.addEventListener('mouseenter', () => {
-        ctaButton.style.setProperty('--glow-intensity', '1');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.animateCounters();
+          observer.unobserve(entry.target);
+        }
       });
-      
-      ctaButton.addEventListener('mouseleave', () => {
-        ctaButton.style.setProperty('--glow-intensity', '0');
-      });
+    }, { threshold: 0.5 });
+    
+    const revenueSection = document.querySelector('.revenue-impact');
+    if (revenueSection) {
+      observer.observe(revenueSection);
     }
+  }
+  
+  animateCounters() {
+    this.counters.forEach(counter => {
+      const element = document.querySelector(counter.selector);
+      if (!element) return;
+      
+      this.animateCounter(element, counter);
+    });
+  }
+  
+  animateCounter(element, config) {
+    const { target, prefix = '', suffix = '' } = config;
+    const duration = 2000;
+    const startTime = performance.now();
+    
+    const updateCounter = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Easing function
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const current = Math.round(target * easeOutQuart);
+      
+      element.textContent = prefix + this.formatNumber(current) + suffix;
+      
+      if (progress < 1) {
+        requestAnimationFrame(updateCounter);
+      }
+    };
+    
+    requestAnimationFrame(updateCounter);
+  }
+  
+  formatNumber(num) {
+    if (num >= 1000) {
+      return (num / 1000).toFixed(0) + 'K';
+    }
+    return num.toString();
   }
 }
 
@@ -388,32 +433,28 @@ class GlassmorphismEffects {
    INITIALIZATION
    =================================================================== */
 
-// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize hero effects
-  new ShockwaveNeuralHero();
-  new GlassmorphismEffects();
+  // Check if we're on a mobile device
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   
-  // Track initial load performance
-  window.addEventListener('load', () => {
-    if ('performance' in window) {
-      const loadTime = performance.getEntriesByType('navigation')[0].loadEventEnd - 
-                      performance.getEntriesByType('navigation')[0].fetchStart;
-      
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'hero_load_complete', {
-          event_category: 'Performance',
-          load_time: Math.round(loadTime),
-          meets_target: loadTime < 2500
-        });
-      }
-    }
-  });
+  if (!isMobile) {
+    new ShockwaveAIHero();
+  } else {
+    // Simplified version for mobile
+    document.documentElement.classList.add('low-end-device');
+    
+    // Initialize typewriter only
+    const typewriter = new ShockwaveAIHero();
+    typewriter.initTypewriter();
+  }
+  
+  new RevenueCounters();
+  
+  // Track hero load
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'ai_hero_loaded', {
+      event_category: 'Hero Section',
+      load_time: performance.now()
+    });
+  }
 });
-
-// Export for external use
-window.ShockwaveHero = {
-  NeuralHero: ShockwaveNeuralHero,
-  GlassmorphismEffects: GlassmorphismEffects,
-  version: '2.0.0'
-};
