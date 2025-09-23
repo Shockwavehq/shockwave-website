@@ -1,38 +1,79 @@
-<section id="hero" class="section" role="region" aria-label="Hero">
+<!-- Section: Hero with FX toggles -->
+<section id="hero" class="section" role="region" aria-label="Hero"
+         data-fx="glass typewriter particles"
+         data-fx-mode="auto">
+  <!-- FX Canvas (particles) -->
+  <canvas class="fx-canvas" aria-hidden="true"></canvas>
+
   <div class="container">
     <div class="grid">
+      <!-- Copy column with glass panel -->
       <div class="copy fade-up" style="transition-delay: 50ms;">
-        <p class="kicker">Impact on Contact™</p>
-        <h1 class="title" aria-describedby="hero-subhead">Answer first. Book fast.</h1>
-        <p id="hero-subhead" class="subhead">
-          Done‑for‑you AI automations that reply across phone, web, and DMs—recovering missed revenue and booking more appointments.
-          Integrated with your stack and deployed fast.
-        </p>
-        <div class="cta-row fade-up" style="transition-delay: 220ms;">
-          <button class="btn btn-primary" data-cta="primary" data-action="open_calendar" aria-label="Open calendar to book a strategy call">Book 20‑min Strategy Call</button>
-          <button class="btn btn-outline" data-cta="secondary" data-sw-scroll-to="#roi-calculator" aria-label="Scroll to ROI calculator">Get Free AI ROI Forecast</button>
-        </div>
-        <ul class="chips fade-up" style="transition-delay: 300ms;" role="list">
-          <li class="chip">Fast first response</li>
-          <li class="chip">High lead capture workflows</li>
-          <li class="chip">48‑hour pilot available</li>
-        </ul>
-        <div class="trust fade-up" style="transition-delay: 360ms;">
-          <div class="line">Trusted by leaders in Dental, HVAC, Legal, Med Spa, Plumbing, and Pest Control</div>
-          <div class="logos">
-            <img src="/assets/logos/n8n.svg" alt="n8n" width="72" height="24" data-evt="trust_logo">
-            <img src="/assets/logos/twilio.svg" alt="Twilio" width="72" height="24" data-evt="trust_logo">
-            <img src="/assets/logos/stripe.svg" alt="Stripe" width="72" height="24" data-evt="trust_logo">
-            <img src="/assets/logos/google-calendar.svg" alt="Google Calendar" width="72" height="24" data-evt="trust_logo">
+        <div class="glass">
+          <p class="kicker">Impact on Contact™</p>
+
+          <h1 class="title" aria-describedby="hero-subhead">
+            Answer first. Book fast.
+            <span class="typewriter"
+                  data-words="phone|web|DMs"
+                  data-prefix="Across "
+                  data-type-speed="70"
+                  data-delete-speed="45"
+                  data-pause="900"></span>
+          </h1>
+
+          <p id="hero-subhead" class="subhead">
+            Done‑for‑you AI automations that reply across phone, web, and DMs—recovering missed revenue and booking more appointments.
+            Integrated with your stack and deployed fast.
+          </p>
+
+          <div class="cta-row fade-up" style="transition-delay: 220ms;">
+            <button class="btn btn-primary"
+                    data-cta="primary"
+                    data-action="open_calendar"
+                    aria-label="Open calendar to book a strategy call">
+              Book 20‑min Strategy Call
+            </button>
+
+            <button class="btn btn-outline"
+                    data-cta="secondary"
+                    data-sw-scroll-to="#roi-calculator"
+                    aria-label="Scroll to ROI calculator">
+              Get Free AI ROI Forecast
+            </button>
+          </div>
+
+          <ul class="chips fade-up" style="transition-delay: 300ms;" role="list">
+            <li class="chip">Fast first response</li>
+            <li class="chip">High lead capture workflows</li>
+            <li class="chip">48‑hour pilot available</li>
+          </ul>
+
+          <div class="trust fade-up" style="transition-delay: 360ms;">
+            <div class="line">Trusted by leaders in Dental, HVAC, Legal, Med Spa, Plumbing, and Pest Control</div>
+            <div class="logos">
+              <img src="/assets/logos/n8n.svg" alt="n8n" width="72" height="24" data-evt="trust_logo">
+              <img src="/assets/logos/twilio.svg" alt="Twilio" width="72" height="24" data-evt="trust_logo">
+              <img src="/assets/logos/stripe.svg" alt="Stripe" width="72" height="24" data-evt="trust_logo">
+              <img src="/assets/logos/google-calendar.svg" alt="Google Calendar" width="72" height="24" data-evt="trust_logo">
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Visual column (LCP candidate) -->
       <div class="visual fade-up" style="transition-delay: 200ms;">
         <picture>
           <source srcset="/assets/hero/hero-mock-mobile.webp" media="(max-width: 768px)">
-          <img class="image" src="/assets/hero/hero-mock-desktop.webp" alt="AI lead response automation preview" width="720" height="560" loading="eager" fetchpriority="high" sizes="(max-width: 768px) 92vw, 560px">
+          <img class="image"
+               src="/assets/hero/hero-mock-desktop.webp"
+               alt="AI lead response automation preview"
+               width="720" height="560"
+               loading="eager" fetchpriority="high"
+               sizes="(max-width: 768px) 92vw, 560px">
         </picture>
       </div>
     </div>
   </div>
 </section>
+
