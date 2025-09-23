@@ -1,4 +1,4 @@
-/* shockwave-live.js — ShockwaveHQ "alive" counters (kept; enhanced) */
+/* Alive counters plugin (optional). Toggle via <body data-live="off"> or ?live=off */
 (function () {
   'use strict';
 
@@ -6,7 +6,6 @@
   const STORE = 'sw_live_data_v1';
   const ENABLED = (document.body.getAttribute('data-live') || 'on') !== 'off' && !/live=off/i.test(location.search);
 
-  // Tunable metrics (keep believable; can override via window.SW_LIVE_CONFIG)
   const DEFAULT_CFG = {
     roi_avg:           { base: 247, var: 20, min: 200, max: 400, dec: 0, trend:  1 },
     deployments:       { base:   8, var:  3, min:   5, max:  15, dec: 0, trend:  1 },
@@ -34,7 +33,6 @@
     return c.dec ? Number(v.toFixed(c.dec)) : Math.round(v);
   }
 
-  // Formatting helpers
   const fmtCurrency = (n, locale) => {
     try { return new Intl.NumberFormat(locale || undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n); }
     catch { return '$' + String(Math.round(n)); }
@@ -51,7 +49,7 @@
     if (format === 'currency') out = fmtCurrency(value, locale);
     else if (format === 'percent') out = fmtPercent(value);
     else if (format === 'float') out = Number(value).toFixed(Number(el.getAttribute('data-precision') || 1));
-    else out = String(Math.round(value)); // int
+    else out = String(Math.round(value));
     return prefix + out + suffix;
   }
 
@@ -65,7 +63,7 @@
     el.classList.add('sw-updating');
     function step(t) {
       const p = Math.min((t - start) / ms, 1);
-      const e = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      const e = 1 - Math.pow(1 - p, 3);
       const cur = from + (end - from) * e;
       el.textContent = formatForEl(el, cur);
       if (p < 1) requestAnimationFrame(step);
@@ -98,33 +96,22 @@
     updateAll();
   }
 
-  // Bind light DOM events (works without engine)
   function bindEvents() {
-    // ROI usage (anchor/scroll)
 
     $$('[data-sw-scroll-to="#roi-calculator"], a[href="#roi-calculator"]').forEach(el => {
       el.addEventListener('click', () => { bump('calculator_users', 1); }, { passive: true });
     });
-    // Calendar open
 
     $$('[data-sw-open="calendar"]').forEach(el => {
       el.addEventListener('click', () => { bump('avg_opportunity', Math.round(Math.random() * 3)); }, { passive: true });
     });
 
-    // Optional: listen for custom events if modules dispatch them
     document.addEventListener('sw:roi_submit', () => bump('calculator_users', 1));
     document.addEventListener('sw:calendar_opened', () => bump('avg_opportunity', Math.round(Math.random() * 3)));
   }
 
-  // Public API
-  window.SW_LIVE = {
-    bump,
-    updateAll,
-    set: (key, value) => { const data = getData(); data[key] = value; setData(data); updateAll(); },
-    config: CFG
-  };
+  window.SW_LIVE = { bump, updateAll, set: (k,v)=>{ const d=getData(); d[k]=v; setData(d); updateAll(); }, config: CFG };
 
-  // Visibility CPU saver
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) clearInterval(window.__swLiveTimer);
     else { updateAll(); window.__swLiveTimer = setInterval(updateAll, 45000); }
