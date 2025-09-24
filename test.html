@@ -1,79 +1,156 @@
-<!-- Section: Hero with FX toggles -->
-<section id="hero" class="section" role="region" aria-label="Hero"
-         data-fx="glass typewriter particles"
-         data-fx-mode="auto">
-  <!-- FX Canvas (particles) -->
-  <canvas class="fx-canvas" aria-hidden="true"></canvas>
+<!-- Section: Hero (Enhanced Typewriter + Glass + Particles + Live Metrics) -->
+<section id="hero" class="section" role="region" aria-label="Hero" data-sw-section="hero">
+  <!-- Live Proof Bar (Subtle Social Proof) -->
+  <div class="live-proof-bar">
+    <div class="container">
+      <div class="live-metrics">
+        <div class="metric-item">
+          <span class="live-indicator"></span>
+          <span class="metric-value">
+            <strong class="sw-live-counter" data-sw-metric="deployments">8</strong> AI agents deployed this week
+          </span>
+        </div>
+        
+        <div class="metric-separator">•</div>
+        
+        <div class="metric-item">
+          <span class="revenue-pulse">💰</span>
+          <span class="metric-value">
+            $<strong class="sw-live-counter" data-sw-metric="revenue">2.4</strong>M generated for clients
+          </span>
+        </div>
+        
+        <div class="metric-separator">•</div>
+        
+        <div class="metric-item">
+          <span class="urgency-icon">🔥</span>
+          <span class="metric-value">
+            <strong class="sw-live-counter" data-sw-metric="spots_remaining">7</strong> Q1 2025 spots remaining
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="container">
     <div class="grid">
-      <!-- Copy column with glass panel -->
-      <div class="copy fade-up" style="transition-delay: 50ms;">
-        <div class="glass">
-          <p class="kicker">Impact on Contact™</p>
+      <!-- Copy column -->
+      <div class="copy glass">
+        <p class="kicker fade-up">Impact on Contact™</p>
 
-          <h1 class="title" aria-describedby="hero-subhead">
-            Answer first. Book fast.
-            <span class="typewriter"
-                  data-words="phone|web|DMs"
-                  data-prefix="Across "
-                  data-type-speed="70"
-                  data-delete-speed="45"
-                  data-pause="900"></span>
-          </h1>
+        <h1 class="fade-up">
+          Answer first. Book 
+          <span class="revenue-highlight">
+            $<span class="sw-live-counter" data-sw-metric="avg_opportunity">127</span>K
+          </span> 
+          faster.
+        </h1>
 
-          <p id="hero-subhead" class="subhead">
-            Done‑for‑you AI automations that reply across phone, web, and DMs—recovering missed revenue and booking more appointments.
-            Integrated with your stack and deployed fast.
-          </p>
+        <!-- Enhanced Typewriter line -->
+        <p class="typewriter-line fade-up"
+           data-typewriter
+           data-words="missed calls|web leads|DMs|voice messages|after-hours inquiries"
+           data-type-speed="75"
+           data-delete-speed="45"
+           data-delay-between="1000"
+           data-loop="true"
+           aria-live="polite">
+          Turn <span class="typewriter"><span data-typewriter-target></span><span class="cursor" aria-hidden="true"></span></span> into booked appointments.
+          <span class="visually-hidden">Turn missed calls, web leads, direct messages, voice messages, and after-hours inquiries into booked appointments.</span>
+        </p>
 
-          <div class="cta-row fade-up" style="transition-delay: 220ms;">
-            <button class="btn btn-primary"
-                    data-cta="primary"
-                    data-action="open_calendar"
-                    aria-label="Open calendar to book a strategy call">
-              Book 20‑min Strategy Call
-            </button>
+        <p class="subhead fade-up">
+          Done‑for‑you AI automations that reply in under 
+          <strong class="response-time">
+            <span class="sw-live-counter" data-sw-metric="response_seconds">47</span> seconds
+          </strong> 
+          across channels to recover missed revenue and book more appointments—integrated with your stack and deployed fast.
+        </p>
 
-            <button class="btn btn-outline"
-                    data-cta="secondary"
-                    data-sw-scroll-to="#roi-calculator"
-                    aria-label="Scroll to ROI calculator">
-              Get Free AI ROI Forecast
-            </button>
+        <div class="cta-row fade-up">
+          <button class="btn btn-primary glow"
+                  data-cta="primary"
+                  data-sw-open="calendar"
+                  aria-label="Open calendar to book a strategy call">
+            <span class="btn-main">Book 20‑min Strategy Call</span>
+            <span class="btn-sub">
+              See your $<span class="sw-live-counter" data-sw-metric="avg_opportunity">127</span>K potential
+            </span>
+          </button>
+
+          <button class="btn btn-outline"
+                  data-cta="secondary"
+                  data-sw-scroll-to="#roi-calculator"
+                  aria-label="Scroll to ROI calculator">
+            <span class="btn-icon">📊</span>
+            Get Free AI ROI Forecast
+            <span class="usage-indicator">
+              (<span class="sw-live-counter" data-sw-metric="calculator_users">23</span> used today)
+            </span>
+          </button>
+        </div>
+
+        <ul class="chips fade-up" role="list">
+          <li class="chip chip-live">
+            <span class="chip-indicator"></span>
+            <span class="sw-live-counter" data-sw-metric="response_seconds">47</span>‑second avg response
+          </li>
+          <li class="chip">Rapid pilot available</li>
+          <li class="chip">You own your data</li>
+          <li class="chip chip-guarantee">
+            <span class="sw-live-counter" data-sw-metric="roi_guarantee">5</span>x ROI guarantee
+          </li>
+        </ul>
+
+        <div class="trust fade-up">
+          <div class="trust-metrics">
+            <div class="trust-metric">
+              <span class="trust-number">
+                <span class="sw-live-counter" data-sw-metric="roi_avg">247</span>%
+              </span>
+              <span class="trust-label">Avg ROI</span>
+            </div>
+            <div class="trust-metric">
+              <span class="trust-number">98%</span>
+              <span class="trust-label">Retention</span>
+            </div>
+            <div class="trust-metric">
+              <span class="trust-number">4.9★</span>
+              <span class="trust-label">Rating</span>
+            </div>
           </div>
-
-          <ul class="chips fade-up" style="transition-delay: 300ms;" role="list">
-            <li class="chip">Fast first response</li>
-            <li class="chip">High lead capture workflows</li>
-            <li class="chip">48‑hour pilot available</li>
-          </ul>
-
-          <div class="trust fade-up" style="transition-delay: 360ms;">
+          
+          <div class="trust-social">
             <div class="line">Trusted by leaders in Dental, HVAC, Legal, Med Spa, Plumbing, and Pest Control</div>
             <div class="logos">
-              <img src="/assets/logos/n8n.svg" alt="n8n" width="72" height="24" data-evt="trust_logo">
-              <img src="/assets/logos/twilio.svg" alt="Twilio" width="72" height="24" data-evt="trust_logo">
-              <img src="/assets/logos/stripe.svg" alt="Stripe" width="72" height="24" data-evt="trust_logo">
-              <img src="/assets/logos/google-calendar.svg" alt="Google Calendar" width="72" height="24" data-evt="trust_logo">
+              <img src="/assets/logos/n8n.svg" alt="n8n integration" data-evt="trust_logo">
+              <img src="/assets/logos/twilio.svg" alt="Twilio integration" data-evt="trust_logo">
+              <img src="/assets/logos/stripe.svg" alt="Stripe integration" data-evt="trust_logo">
+              <img src="/assets/logos/google-calendar.svg" alt="Google Calendar integration" data-evt="trust_logo">
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Visual column (LCP candidate) -->
-      <div class="visual fade-up" style="transition-delay: 200ms;">
+      <!-- Visual column (LCP candidate + particles host) -->
+      <div class="visual fade-up">
+        <div data-particles aria-hidden="true"></div>
+        
+        <!-- Live Activity Indicator -->
+        <div class="activity-indicator">
+          <span class="activity-dot"></span>
+          <span class="activity-text">Live: AI responding to leads</span>
+        </div>
+        
         <picture>
           <source srcset="/assets/hero/hero-mock-mobile.webp" media="(max-width: 768px)">
-          <img class="image"
-               src="/assets/hero/hero-mock-desktop.webp"
-               alt="AI lead response automation preview"
+          <img src="/assets/hero/hero-mock-desktop.webp"
+               alt="AI lead response automation preview showing instant responses"
                width="720" height="560"
-               loading="eager" fetchpriority="high"
+               loading="eager" fetchpriority="high" decoding="async"
                sizes="(max-width: 768px) 92vw, 560px">
         </picture>
       </div>
     </div>
   </div>
 </section>
-
