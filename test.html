@@ -1,31 +1,27 @@
-<!-- Section: Hero (Enhanced Typewriter + Glass + Particles + Live Metrics) -->
+<!-- Section: Hero (Typewriter + Glass + Particles + Live Metrics) -->
 <section id="hero" class="section" role="region" aria-label="Hero" data-sw-section="hero">
-  <!-- Live Proof Bar (Subtle Social Proof) -->
+  <!-- Live Proof Bar (activity-style; non-sticky by default) -->
   <div class="live-proof-bar">
     <div class="container">
       <div class="live-metrics">
         <div class="metric-item">
-          <span class="live-indicator"></span>
+          <span class="live-indicator" aria-hidden="true"></span>
           <span class="metric-value">
-            <strong class="sw-live-counter" data-sw-metric="deployments">8</strong> AI agents deployed this week
+            <strong class="sw-live-counter" data-sw-metric="deployments" data-format="int">8</strong> AI agents deployed this week
           </span>
         </div>
-        
-        <div class="metric-separator">•</div>
-        
+        <div class="metric-separator" aria-hidden="true">•</div>
         <div class="metric-item">
-          <span class="revenue-pulse">💰</span>
+          <span class="revenue-pulse" aria-hidden="true">💰</span>
           <span class="metric-value">
-            $<strong class="sw-live-counter" data-sw-metric="revenue">2.4</strong>M generated for clients
+            <span class="sw-live-counter" data-sw-metric="revenue" data-format="float" data-precision="1" data-prefix="$" data-suffix="M">2.4</span> generated (activity)
           </span>
         </div>
-        
-        <div class="metric-separator">•</div>
-        
+        <div class="metric-separator" aria-hidden="true">•</div>
         <div class="metric-item">
-          <span class="urgency-icon">🔥</span>
+          <span class="urgency-icon" aria-hidden="true">🔥</span>
           <span class="metric-value">
-            <strong class="sw-live-counter" data-sw-metric="spots_remaining">7</strong> Q1 2025 spots remaining
+            <strong class="sw-live-counter" data-sw-metric="spots_remaining" data-format="int">7</strong> Q1 spots currently available
           </span>
         </div>
       </div>
@@ -39,14 +35,14 @@
         <p class="kicker fade-up">Impact on Contact™</p>
 
         <h1 class="fade-up">
-          Answer first. Book 
+          Answer first. Book
           <span class="revenue-highlight">
-            $<span class="sw-live-counter" data-sw-metric="avg_opportunity">127</span>K
-          </span> 
+            <span class="sw-live-counter" data-sw-metric="avg_opportunity" data-format="int" data-prefix="$" data-suffix="K">127</span>
+          </span>
           faster.
         </h1>
 
-        <!-- Enhanced Typewriter line -->
+        <!-- Typewriter line -->
         <p class="typewriter-line fade-up"
            data-typewriter
            data-words="missed calls|web leads|DMs|voice messages|after-hours inquiries"
@@ -60,11 +56,7 @@
         </p>
 
         <p class="subhead fade-up">
-          Done‑for‑you AI automations that reply in under 
-          <strong class="response-time">
-            <span class="sw-live-counter" data-sw-metric="response_seconds">47</span> seconds
-          </strong> 
-          across channels to recover missed revenue and book more appointments—integrated with your stack and deployed fast.
+          Done‑for‑you AI automations that reply near‑instantly across channels to recover missed revenue and book more appointments—integrated with your stack and deployed fast.
         </p>
 
         <div class="cta-row fade-up">
@@ -74,7 +66,7 @@
                   aria-label="Open calendar to book a strategy call">
             <span class="btn-main">Book 20‑min Strategy Call</span>
             <span class="btn-sub">
-              See your $<span class="sw-live-counter" data-sw-metric="avg_opportunity">127</span>K potential
+              See your <span class="sw-live-counter" data-sw-metric="avg_opportunity" data-format="int" data-prefix="$" data-suffix="K">127</span> potential
             </span>
           </button>
 
@@ -82,44 +74,21 @@
                   data-cta="secondary"
                   data-sw-scroll-to="#roi-calculator"
                   aria-label="Scroll to ROI calculator">
-            <span class="btn-icon">📊</span>
+            <span class="btn-icon" aria-hidden="true">📊</span>
             Get Free AI ROI Forecast
             <span class="usage-indicator">
-              (<span class="sw-live-counter" data-sw-metric="calculator_users">23</span> used today)
+              (<span class="sw-live-counter" data-sw-metric="calculator_users" data-format="int">23</span> today)
             </span>
           </button>
         </div>
 
         <ul class="chips fade-up" role="list">
-          <li class="chip chip-live">
-            <span class="chip-indicator"></span>
-            <span class="sw-live-counter" data-sw-metric="response_seconds">47</span>‑second avg response
-          </li>
+          <li class="chip chip-live"><span class="chip-indicator" aria-hidden="true"></span>Fast first response</li>
           <li class="chip">Rapid pilot available</li>
           <li class="chip">You own your data</li>
-          <li class="chip chip-guarantee">
-            <span class="sw-live-counter" data-sw-metric="roi_guarantee">5</span>x ROI guarantee
-          </li>
         </ul>
 
         <div class="trust fade-up">
-          <div class="trust-metrics">
-            <div class="trust-metric">
-              <span class="trust-number">
-                <span class="sw-live-counter" data-sw-metric="roi_avg">247</span>%
-              </span>
-              <span class="trust-label">Avg ROI</span>
-            </div>
-            <div class="trust-metric">
-              <span class="trust-number">98%</span>
-              <span class="trust-label">Retention</span>
-            </div>
-            <div class="trust-metric">
-              <span class="trust-number">4.9★</span>
-              <span class="trust-label">Rating</span>
-            </div>
-          </div>
-          
           <div class="trust-social">
             <div class="line">Trusted by leaders in Dental, HVAC, Legal, Med Spa, Plumbing, and Pest Control</div>
             <div class="logos">
@@ -132,16 +101,15 @@
         </div>
       </div>
 
-      <!-- Visual column (LCP candidate + particles host) -->
+      <!-- Visual column (LCP + particles host) -->
       <div class="visual fade-up">
         <div data-particles aria-hidden="true"></div>
-        
-        <!-- Live Activity Indicator -->
-        <div class="activity-indicator">
+
+        <div class="activity-indicator" aria-hidden="true">
           <span class="activity-dot"></span>
           <span class="activity-text">Live: AI responding to leads</span>
         </div>
-        
+
         <picture>
           <source srcset="/assets/hero/hero-mock-mobile.webp" media="(max-width: 768px)">
           <img src="/assets/hero/hero-mock-desktop.webp"
