@@ -11,6 +11,7 @@
     deployments:       { base:   8, var:  3, min:   5, max:  15, dec: 0, trend:  1 },
     revenue:           { base: 2.4, var: 0.2, min: 2.0, max: 3.5, dec: 1, trend:  1 },
     spots_remaining:   { base:   7, var:  1, min:   3, max:  12, dec: 0, trend: -1 },
+    response_seconds:  { base: 47, var: 15, min: 25, max: 90, dec: 0, trend: -1 },
     hourly_revenue:    { base: 247, var: 30, min: 180, max: 350, dec: 0, trend:  1 },
     roi_guarantee:     { base:   5, var:  0, min:   5, max:   5, dec: 0, trend:  0 },
     payback_days:      { base:  60, var: 15, min:  30, max:  90, dec: 0, trend: -1 },
